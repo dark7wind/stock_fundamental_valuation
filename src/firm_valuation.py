@@ -1,6 +1,6 @@
 import numpy as np
 
-def ebit_base_margin(ebit, revenues):
+def ebit_base_margin_func(ebit, revenues):
     """
     :param ebit: EBIT (operating income)
     :param revenues: Revenue
@@ -8,7 +8,10 @@ def ebit_base_margin(ebit, revenues):
     """
     return ebit/revenues
 
-def nol(revenue, nol_pre_y):
+def ebit_base_year_func():
+    pass
+
+def nol_func(revenue, nol_pre_y):
     """
     :param revenue: Revenue current year
     :param nol_pre_y: Net Operation Loss in the previous year
@@ -22,7 +25,7 @@ def nol(revenue, nol_pre_y):
         else:
             return 0
 
-def after_tax_ebit(ebit, nol_pre_y, tax_rate):
+def after_tax_ebit_func(ebit, nol_pre_y, tax_rate):
     """
     :param ebit: EBIT (operating income)
     :param nol_pre_y: previous year net operating loss
@@ -37,7 +40,7 @@ def after_tax_ebit(ebit, nol_pre_y, tax_rate):
     else:
         return ebit
 
-def reinvestment(revenue_c, revenue_p, ratio_sales_capital):
+def reinvestment_func(revenue_c, revenue_p, ratio_sales_capital):
     """
     :param revenue_c: Revenue current year
     :param reveune_p: Revenue previous year
@@ -49,7 +52,7 @@ def reinvestment(revenue_c, revenue_p, ratio_sales_capital):
     else:
         return 0
 
-def fcff(after_tax_ebit, reinvestment):
+def fcff_func(after_tax_ebit, reinvestment):
     """
     :param after_tax_ebit: EBIT after tax
     :param reinvestment: reinvestment
@@ -57,7 +60,7 @@ def fcff(after_tax_ebit, reinvestment):
     """
     return after_tax_ebit - reinvestment
 
-def present_value(cash_flow, discount_rate_list):
+def present_value_func(cash_flow, discount_rate_list):
     """
     :param cash_flow: Cash Flow current year
     :param discount_rate_list: list of discount rates
@@ -69,7 +72,7 @@ def present_value(cash_flow, discount_rate_list):
         cumulated_discount = cumulated_discount*(1+r)
     return cash_flow/cumulated_discount
 
-def terminal_value(cash_flow_terminal, cost_capital_terminal, growth_terminal):
+def terminal_value_func(cash_flow_terminal, cost_capital_terminal, growth_terminal):
     """
     :param cash_flow_terminal: cash flow terminal year
     :param cost_capital_terminal: cost of capital in terminal year
@@ -78,31 +81,23 @@ def terminal_value(cash_flow_terminal, cost_capital_terminal, growth_terminal):
     """
     return cash_flow_terminal/(cost_capital_terminal - growth_terminal)
 
-def growth_list():
+
+def cost_capital_list_func():
     pass
 
-def margin_list():
+def tax_rate_list_func():
     pass
 
-def sales_to_capital_list():
+def growth_rate_terminal_func():
     pass
 
-def cost_capital_list():
+def roic_terminal_func():
     pass
 
-def tax_rate_list():
+def cost_capital_terminal_func():
     pass
 
-def growth_rate_terminal():
-    pass
-
-def roic_terminal():
-    pass
-
-def cost_capital_terminal():
-    pass
-
-def present_value_growth_period(revenue_current, growth_list, margin_list, tax_rate_list, nol_list, \
+def present_value_growth_period_func(revenue_current, growth_list, margin_list, tax_rate_list, nol_list, \
                                 sales_to_capital_list, cost_capital_list):
     assert (len(growth_list) == len(sales_to_capital_list) and len(growth_list) == len(margin_list) and \
             len(growth_list) == len(tax_rate_list) and len(growth_list) == len(cost_capital_list) and \
@@ -120,10 +115,10 @@ def present_value_growth_period(revenue_current, growth_list, margin_list, tax_r
         revenue_p = revenue
         revenue = revenue*(1+growth_list[i])
         ebit = revenue*margin_list[i]
-        ebit_after_tax = after_tax_ebit(ebit, nol_list[i], tax_rate_list[i])
-        value_reinvestment = reinvestment(revenue, revenue_p, sales_to_capital_list[i])
-        value_fcff = fcff(ebit_after_tax, value_reinvestment)
-        value_present = present_value(value_fcff, cost_capital_list[:i+1])
+        ebit_after_tax = after_tax_ebit_func(ebit, nol_list[i], tax_rate_list[i])
+        value_reinvestment = reinvestment_func(revenue, revenue_p, sales_to_capital_list[i])
+        value_fcff = fcff_func(ebit_after_tax, value_reinvestment)
+        value_present = present_value_func(value_fcff, cost_capital_list[:i+1])
 
         revenue_list.append(revenue)
         present_value_list.append(value_present)
@@ -132,7 +127,7 @@ def present_value_growth_period(revenue_current, growth_list, margin_list, tax_r
 
     return present_value_total, revenue_list, present_value_list
 
-def present_value_terminal(revenue_list, growth_rate_terminal, margin_list, tax_terminal, roic_terminal, \
+def present_value_terminal_func(revenue_list, growth_rate_terminal, margin_list, tax_terminal, roic_terminal, \
                            cost_capital_terminal, cost_capital_list):
 
     # terminal fcff
@@ -144,17 +139,17 @@ def present_value_terminal(revenue_list, growth_rate_terminal, margin_list, tax_
         reinvestment_terminal = (growth_rate_terminal/roic_terminal)*ebit_after_tax_terminal # growth_rate = reinvestment_rate_* roic
     else:
         reinvestment_terminal = 0
-    fcff_terminal = fcff(ebit_after_tax_terminal, reinvestment_terminal)
+    fcff_terminal = fcff_func(ebit_after_tax_terminal, reinvestment_terminal)
 
     # terminal value
-    value_terminal = terminal_value(fcff_terminal, cost_capital_terminal, growth_rate_terminal)
-    terminal_present_value = present_value(value_terminal, cost_capital_list)
+    value_terminal = terminal_value_func(fcff_terminal, cost_capital_terminal, growth_rate_terminal)
+    terminal_present_value = present_value_func(value_terminal, cost_capital_list)
     return terminal_present_value
 
-def proceeds_failure():
+def proceeds_failure_func():
     pass
 
-def value_operating_assets(present_value_terminal, present_value_growth_period, prob_failure, proceeds_failure):
+def value_operating_assets_func(present_value_terminal, present_value_growth_period, prob_failure, proceeds_failure):
     """
     :param present_value_sum: sum of present value of the company
     :param prob_failure: probability of company failure over  the foreseeable future
@@ -164,7 +159,7 @@ def value_operating_assets(present_value_terminal, present_value_growth_period, 
     present_value_sum = present_value_terminal + present_value_growth_period
     return present_value_sum*(1-prob_failure) + proceeds_failure*prob_failure
 
-def debt(debt_bv, lease_flag, lease_to_debt):
+def debt_func(debt_bv, lease_flag, lease_to_debt):
     """
     :param debt_bv: book value of debt
     :param lease_flag: flag of lease converter
@@ -176,7 +171,7 @@ def debt(debt_bv, lease_flag, lease_to_debt):
     else:
         return debt_bv
 
-def cash(cash_securities, flag_foreign_trap=False, cash_trapped=0, tax_marginal=0.25, tax_foreign=0.15):
+def cash_func(cash_securities, flag_foreign_trap=False, cash_trapped=0, tax_marginal=0.25, tax_foreign=0.15):
     """
     :param cash_securities: cash and marketable securities
     :param flag_foreign_trap:
@@ -190,7 +185,7 @@ def cash(cash_securities, flag_foreign_trap=False, cash_trapped=0, tax_marginal=
     else:
         return cash_securities
 
-def equity_value_common_stock(value_operating_assets, debt, minority_interests, cash, \
+def equity_value_common_stock_func(value_operating_assets, debt, minority_interests, cash, \
                               non_operating_assets, value_options):
     """
     :param value_operating_assets: value of operating assets
@@ -203,7 +198,7 @@ def equity_value_common_stock(value_operating_assets, debt, minority_interests, 
     """
     return value_operating_assets - debt - minority_interests + cash + non_operating_assets - value_options
 
-def estimated_value_share(equity_value, num_share, price_current):
+def estimated_value_share_func(equity_value, num_share, price_current):
     estimated_value = equity_value / num_share
     price_to_value = price_current / estimated_value
     return estimated_value, price_to_value
