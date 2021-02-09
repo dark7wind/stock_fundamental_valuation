@@ -1,6 +1,7 @@
 import yahoofinancials as yf
 import pickle
 from src.firm_valuation import *
+from src.firm_input import *
 
 #%%
 ticker = 'TSN'
@@ -45,11 +46,36 @@ value_options = 0
 num_share = 294790000
 price_current = 64.75
 
-growth_list = [0.02, 0.02, 0.02, 0.02, 0.02, 0.0182, 0.0164, 0.0147, 0.0129, 0.0111]
-margin_list = [0.07, 0.066, 0.064, 0.062, 0.06, 0.06, 0.06, 0.06, 0.06, 0.06]
+r_gr_next = 0.02
+r_gr_high = 0.02
+length_high_growth = 10
+length_high_growth_stable = 5
+r_riskfree = 0.0111
+flag_gr_terminal_direct = False
+r_gr_terminal_direct = 0.02
+
+margin_next_year = 0.07
+margin_target = 0.06
+converge_year = 5
+
+sales_to_capital_flag = "industry_us"
+invested_capital = 26037 # to do
+industry_us = 1.36
+industry_global = 1.66
+
+# growth_list = [0.02, 0.02, 0.02, 0.02, 0.02, 0.0182, 0.0164, 0.0147, 0.0129, 0.0111]
+growth_list = growth_list_direct_func(r_gr_next, r_gr_high, length_high_growth, length_high_growth_stable,\
+                                      r_riskfree, flag_gr_terminal_direct, r_gr_terminal_direct)
+# margin_list = [0.07, 0.066, 0.064, 0.062, 0.06, 0.06, 0.06, 0.06, 0.06, 0.06]
+margin_list = margin_list_direct_func(margin_next_year, margin_target, converge_year, length_high_growth)
+# sales_to_capital_list = [1.36, 1.36, 1.36, 1.36, 1.36, 1.36, 1.36, 1.36, 1.36, 1.36]
+sales_to_capital_list = sales_to_capital_list_func(revenue, invested_capital, industry_us, industry_global, \
+                                                   length_high_growth, sales_to_capital_flag)
+
+
+
 tax_rate_list = [0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25]
 nol_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-sales_to_capital_list = [1.36, 1.36, 1.36, 1.36, 1.36, 1.36, 1.36, 1.36, 1.36, 1.36]
 cost_capital_list = [0.065, 0.065, 0.065, 0.065, 0.065, 0.0641, 0.0632, 0.0623, 0.0614, 0.0605]
 tax_terminal = 0.25
 terminal_roic = 0.0605

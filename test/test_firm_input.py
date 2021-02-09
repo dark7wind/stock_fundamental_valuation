@@ -1,6 +1,6 @@
 import unittest
 
-from src.firm_input import growth_list_direct_func
+from src.firm_input import growth_list_direct_func, margin_list_direct_func, sales_to_capital_list_func
 
 class TestFirmInput(unittest.TestCase):
     def test_growth_list_direct_func(self):
@@ -18,3 +18,41 @@ class TestFirmInput(unittest.TestCase):
         result = growth_list_direct_func(r_gr_next, r_gr_high, length_high_growth, length_high_growth_stable,\
                                          r_riskfree, flag_gr_terminal_direct, r_gr_terminal_direct)
         self.assertEqual(result, [0.02, 0.02, 0.02, 0.02, 0.02, 0.01822, 0.01644, 0.014660000000000001, 0.01288, 0.0111])
+
+    def test_margin_list_direct_func(self):
+        """
+        :return:
+        """
+        # test case 1
+        margin_next_year = 0.07
+        margin_target = 0.06
+        converge_year = 5
+        length_high_growth = 10
+        result = margin_list_direct_func(margin_next_year, margin_target, converge_year, length_high_growth)
+        self.assertEqual(result, [0.07, 0.066, 0.064, 0.062, 0.06, 0.06, 0.06, 0.06, 0.06, 0.06])
+
+    def test_sales_to_capital_list_func(self):
+        """
+        :return:
+        """
+        # test case 1
+        flag = "company"
+        revenue = 43185
+        invested_capital = 26037
+        length_high_growth = 10
+        industry_us = 1.36
+        industry_global = 1.66
+        result = sales_to_capital_list_func(revenue, invested_capital, industry_us, industry_global,\
+                                            length_high_growth, flag)
+        self.assertEqual(result, [1.658601221338864]*length_high_growth)
+
+        # test case 2
+        flag = "industry_us"
+        revenue = 43185
+        invested_capital = 26037
+        length_high_growth = 10
+        industry_us = 1.36
+        industry_global = 1.66
+        result = sales_to_capital_list_func(revenue, invested_capital, industry_us, industry_global, \
+                                            length_high_growth, flag)
+        self.assertEqual(result, [1.36] * length_high_growth)
