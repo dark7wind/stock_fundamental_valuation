@@ -56,6 +56,16 @@ def margin_list_direct_func(margin_next_year, margin_target, converge_year, leng
 
 def sales_to_capital_list_func(revenue, invested_capital, industry_us, industry_global, length_high_growth,\
                                flag='company'):
+    """
+    sales_to_capital = revenue/invested_capital
+    :param revenue:
+    :param invested_capital:
+    :param industry_us:
+    :param industry_global:
+    :param length_high_growth: length of high growth period
+    :param flag: 'company' or 'industry_us' or 'industry_global'
+    :return:
+    """
     if flag == "company":
         sales_to_capital = revenue/invested_capital
         return [sales_to_capital]*length_high_growth
@@ -72,18 +82,52 @@ def sales_to_capital_list_func(revenue, invested_capital, industry_us, industry_
         print('the flag should be one of the following: 1. company, 2. industry_us, 3. industry_global')
 
 
-def tax_rate_list_func(net_income_before_tax, tax, r_marginal_tax, flag_terminal_tax,):
-    pass
+def tax_rate_list_func(effective_tax_rate, marginal_tax_rate, length_high_growth, length_high_growth_stable,\
+                       flag_terminal_tax):
+    """
+    You will find this in your company's annual report. If you cannot, you can compute it as follows,
+    from the income statement: Effective tax rate = Taxes paid/ Taxable income
+    If your effective tax rate varies across years, you can use an average. If the effective tax rate is less than zero,
+    enter zero. If you have a money losing company, don't enter zero but enter the tax rate that you will have when you
+    start making money.
+    :param effective_tax_rate:
+    :param marginal_tax_rate:
+    :param length_high_growth: length of high growth period
+    :param length_high_growth_stable: length of high and stable growth period
+    :param flag_terminal_tax: True: assume that your effective tax rate will adjust to your marginal tax rate by your
+                                    terminal year.
+                              False: leave the tax rate at your effective tax rate.
+    :return:
+    """
+    tax_rate_list = []
+
+    if flag_terminal_tax:
+        terminal_tax_rate = marginal_tax_rate
+    else:
+        terminal_tax_rate = effective_tax_rate
+
+    for i in range(1, length_high_growth+1):
+        if i <= length_high_growth_stable:
+            tax_rate = effective_tax_rate
+            tax_rate_list.append(tax_rate)
+        else:
+            tax_rate = tax_rate+(terminal_tax_rate-effective_tax_rate)/(length_high_growth-length_high_growth_stable)
+            tax_rate_list.append(tax_rate)
+
+    return tax_rate_list
 
 
-flag = "company"
-revenue = 43185
-invested_capital = 26037
+
+
+
+
+effective_tax_rate = 0.25
+marginal_tax_rate = 0.25
 length_high_growth = 10
-industry_us = 1.36
-industry_global = 1.66
+length_high_growth_stable = 5
+flag_terminal_tax = True
 
-test = sales_to_capital_list_func(revenue, invested_capital, industry_us, industry_global, length_high_growth,\
-                                  flag='company')
+test = tax_rate_list_func(effective_tax_rate, marginal_tax_rate, length_high_growth, length_high_growth_stable,\
+                          flag_terminal_tax)
 
 1
