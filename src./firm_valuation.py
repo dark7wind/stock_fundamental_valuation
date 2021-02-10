@@ -11,19 +11,6 @@ def ebit_base_margin_func(ebit, revenues):
 def ebit_base_year_func():
     pass
 
-def nol_func(revenue, nol_pre_y):
-    """
-    :param revenue: Revenue current year
-    :param nol_pre_y: Net Operation Loss in the previous year
-    :return:
-    """
-    if revenue < 0:
-        return nol_pre_y - revenue
-    else:
-        if nol_pre_y > revenue:
-            return nol_pre_y - revenue
-        else:
-            return 0
 
 def after_tax_ebit_func(ebit, nol_pre_y, tax_rate):
     """
@@ -82,69 +69,32 @@ def terminal_value_func(cash_flow_terminal, cost_capital_terminal, growth_termin
     return cash_flow_terminal/(cost_capital_terminal - growth_terminal)
 
 
-def cost_capital_list_func():
-    pass
-
-def tax_rate_list_func():
-    pass
-
-def growth_rate_terminal_func():
-    pass
-
-def roic_terminal_func():
-    pass
-
-def cost_capital_terminal_func():
-    pass
-
-def present_value_growth_period_func(revenue_current, growth_list, margin_list, tax_rate_list, nol_list, \
-                                sales_to_capital_list, cost_capital_list):
-    assert (len(growth_list) == len(sales_to_capital_list) and len(growth_list) == len(margin_list) and \
-            len(growth_list) == len(tax_rate_list) and len(growth_list) == len(cost_capital_list) and \
-            len(growth_list) == len(nol_list)), \
-        'Check the length of the list of growth, sales_to_capital and cost_capital'
-    n = len(growth_list)
-    # revenue
-    revenue_list = list()
-    revenue_list.append(revenue_current)
-    revenue = revenue_current
-    # present value
-    present_value_list = list()
-
-    for i in range(n):
-        revenue_p = revenue
-        revenue = revenue*(1+growth_list[i])
-        ebit = revenue*margin_list[i]
-        ebit_after_tax = after_tax_ebit_func(ebit, nol_list[i], tax_rate_list[i])
-        value_reinvestment = reinvestment_func(revenue, revenue_p, sales_to_capital_list[i])
-        value_fcff = fcff_func(ebit_after_tax, value_reinvestment)
-        value_present = present_value_func(value_fcff, cost_capital_list[:i+1])
-
-        revenue_list.append(revenue)
-        present_value_list.append(value_present)
-
-    present_value_total = np.sum(present_value_list)
-
-    return present_value_total, revenue_list, present_value_list
-
-def present_value_terminal_func(revenue_list, growth_rate_terminal, margin_list, tax_terminal, roic_terminal, \
-                           cost_capital_terminal, cost_capital_list):
-
-    # terminal fcff
-    revenue_terminal = revenue_list[-1]*(1+growth_rate_terminal)
-    margin_terminal = margin_list[-1]
-    ebit = revenue_terminal*margin_terminal
-    ebit_after_tax_terminal = ebit*(1-tax_terminal)
-    if revenue_terminal > 0:
-        reinvestment_terminal = (growth_rate_terminal/roic_terminal)*ebit_after_tax_terminal # growth_rate = reinvestment_rate_* roic
+def effective_tax_rate_func(taxable_income, tax_paid, marginal_tax_rate, estimate_effective_tax_rate=0.25, flag_avg=False):
+    """
+    You will find this in your company's annual report. If you cannot, you can compute it as follows,
+    from the income statement: Effective tax rate = Taxes paid/ Taxable income
+    If your effective tax rate varies across years, you can use an average. If the effective tax rate is less than zero,
+    enter zero. If you have a money losing company, don't enter zero but enter the tax rate that you will have when you
+    start making money.
+    :param taxable_income:
+    :param tax_paid:
+    :param marginal_tax_rate:
+    :param estimate_effective_tax_rate: if money losing company, estimate the effective tax rate when it starts to
+           making money
+    :param flag_avg: True: calculate the average effective tax rate
+    :return:
+    """
+    if not flag_avg:
+        effective_tax_rate = tax_paid / taxable_income
     else:
-        reinvestment_terminal = 0
-    fcff_terminal = fcff_func(ebit_after_tax_terminal, reinvestment_terminal)
+        pass # to do
 
-    # terminal value
-    value_terminal = terminal_value_func(fcff_terminal, cost_capital_terminal, growth_rate_terminal)
-    terminal_present_value = present_value_func(value_terminal, cost_capital_list)
-    return terminal_present_value
+    if effective_tax_rate < 0:
+        effective_tax_rate = estimate_effective_tax_rate
+    elif effective_tax_rate > 1:
+        effective_tax_rate = marginal_tax_rate
+
+    return effective_tax_rate
 
 def proceeds_failure_func():
     pass
@@ -199,9 +149,113 @@ def equity_value_common_stock_func(value_operating_assets, debt, minority_intere
     return value_operating_assets - debt - minority_interests + cash + non_operating_assets - value_options
 
 def estimated_value_share_func(equity_value, num_share, price_current):
+    """
+    :param equity_value:
+    :param num_share:
+    :param price_current:
+    :return:
+    """
     estimated_value = equity_value / num_share
     price_to_value = price_current / estimated_value
     return estimated_value, price_to_value
+
+def revenue_list_func(revenue_current, growth_list, length_high_growth):
+
+    # revenue
+    revenue = revenue_current
+    revenue_list = list()
+    revenue_list.append(revenue)
+    for i in range(0, length_high_growth):
+        revenue = revenue * (1 + growth_list[i])
+        revenue_list.append(revenue)
+    return revenue_list
+
+
+def ebit_list_func(revenue_list, margin_list):
+    ebit_list = [revenue * margin for revenue, margin in zip(revenue_list[1:], margin_list)]
+    return ebit_list
+
+def net_income_func(ebit, nol_pre_y):
+    """
+    :param ebit: EBIT -> operating income
+    :param nol_pre_y: Net Operation Loss in the previous year
+    :return:
+    """
+    if ebit < 0:
+        return nol_pre_y - ebit
+    else:
+        if nol_pre_y > ebit:
+            return nol_pre_y - ebit
+        else:
+            return 0
+
+def net_income_list_loss_func(net_income_loss_previous, ebit_list, length_high_growth, flag):
+    """
+    :param net_income_loss_previous:
+    :param ebit_list:
+    :param length_high_growth:
+    :param flag:
+    :return:
+    """
+    nol_list = list()
+    if not flag:
+        nol_initial = 0
+        # nol_list = [nol_initial]*length_high_growth
+    else:
+        nol_initial = net_income_loss_previous
+
+    nol = nol_initial
+    nol_list.append(nol)
+
+    for i in range(0, length_high_growth):
+        nol = net_income_func(ebit_list[i], nol)
+        nol_list.append(nol)
+    return nol_list[1:] # in valuation, only need the nol from year 1
+
+
+def present_value_growth_period_func(revenue_list, ebit_list, growth_list, margin_list, tax_rate_list, nol_list, \
+                                     sales_to_capital_list, cost_capital_list):
+    assert (len(growth_list) == len(sales_to_capital_list) and len(growth_list) == len(margin_list) and \
+            len(growth_list) == len(tax_rate_list) and len(growth_list) == len(cost_capital_list) and \
+            len(growth_list) == len(nol_list)), \
+        'Check the length of the list of growth, sales_to_capital and cost_capital'
+    n = len(growth_list)
+    # present value
+    present_value_list = list()
+
+    for i in range(n):
+        revenue_previous = revenue_list[i]
+        revenue_current = revenue_list[i+1]
+        ebit_after_tax = after_tax_ebit_func(ebit_list[i], nol_list[i], tax_rate_list[i])
+        value_reinvestment = reinvestment_func(revenue_current, revenue_previous, sales_to_capital_list[i])
+        value_fcff = fcff_func(ebit_after_tax, value_reinvestment)
+        value_present = present_value_func(value_fcff, cost_capital_list[:i+1])
+        present_value_list.append(value_present)
+
+    present_value_total = np.sum(present_value_list)
+
+    return present_value_total, present_value_list
+
+
+
+def present_value_terminal_func(revenue_list, growth_rate_terminal, margin_list, tax_terminal, roic_terminal, \
+                                cost_capital_terminal, cost_capital_list):
+
+    # terminal fcff
+    revenue_terminal = revenue_list[-1]*(1+growth_rate_terminal)
+    margin_terminal = margin_list[-1]
+    ebit = revenue_terminal*margin_terminal
+    ebit_after_tax_terminal = ebit*(1-tax_terminal)
+    if revenue_terminal > 0:
+        reinvestment_terminal = (growth_rate_terminal/roic_terminal)*ebit_after_tax_terminal # growth_rate = reinvestment_rate_* roic
+    else:
+        reinvestment_terminal = 0
+    fcff_terminal = fcff_func(ebit_after_tax_terminal, reinvestment_terminal)
+
+    # terminal value
+    value_terminal = terminal_value_func(fcff_terminal, cost_capital_terminal, growth_rate_terminal)
+    terminal_present_value = present_value_func(value_terminal, cost_capital_list)
+    return terminal_present_value
 
 
 
