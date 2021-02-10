@@ -38,62 +38,94 @@ print(f'currnet_date: {current_date}')
 
 ## input
 ## to do make input function / class
+
+## financial statement input
 revenue_current = current_income_statement['totalRevenue']
+income_before_tax = current_income_statement['incomeBeforeTax']
+income_tax_expense = current_income_statement['incomeTaxExpense']
 debt_bv = current_balance_sheet['shortLongTermDebt'] + current_balance_sheet['longTermDebt']
 cash_value = current_balance_sheet['cash']
+minority_interests = current_balance_sheet['minorityInterest']
 non_operating_assets = 0
 value_options = 0
 num_share = 294790000
 price_current = 64.75
+effective_tax_rate_current = effective_tax_rate_func(income_before_tax, income_tax_expense, marginal_tax_rate, \
+                                                     estimate_effective_tax_rate=0.25, flag_avg=False)
+minority_interests = 0
 
+
+## user manual input
 r_gr_next = 0.02
 r_gr_high = 0.02
 length_high_growth = 10
 length_high_growth_stable = 5
-r_riskfree = 0.0111
-flag_gr_terminal_direct = False
-r_gr_terminal_direct = 0.02
-
 margin_next_year = 0.07
 margin_target = 0.06
 converge_year = 5
-
+r_riskfree = 0.0111
 sales_to_capital_flag = "industry_us"
 invested_capital = 26037 # to do
 industry_us = 1.36
 industry_global = 1.66
 
+effective_tax_rate = 0.25
+marginal_tax_rate = 0.25
+
+## R&D capitalization
+
+
+## Lease capitalization
+lease_flag = True
+lease_to_debt = 520971240
+
+## default assumption
+flag_gr_terminal_direct = False
+r_gr_terminal_direct = 0.02
+
+flag_terminal_tax = True
+
+nol_initial_flag = False
+net_income_loss_previous = 0
+tax_terminal = 0.25
+terminal_roic = 0.0605
+terminal_cost_capital = 0.0605
+prob_failure = 0
+proceeds_failure = 0
+
+
+## output
 # growth_list = [0.02, 0.02, 0.02, 0.02, 0.02, 0.0182, 0.0164, 0.0147, 0.0129, 0.0111]
 growth_list = growth_list_direct_func(r_gr_next, r_gr_high, length_high_growth, length_high_growth_stable,\
                                       r_riskfree, flag_gr_terminal_direct, r_gr_terminal_direct)
 # margin_list = [0.07, 0.066, 0.064, 0.062, 0.06, 0.06, 0.06, 0.06, 0.06, 0.06]
 margin_list = margin_list_direct_func(margin_next_year, margin_target, converge_year, length_high_growth)
 # sales_to_capital_list = [1.36, 1.36, 1.36, 1.36, 1.36, 1.36, 1.36, 1.36, 1.36, 1.36]
-sales_to_capital_list = sales_to_capital_list_func(revenue, invested_capital, industry_us, industry_global, \
+sales_to_capital_list = sales_to_capital_list_func(revenue_current, invested_capital, industry_us, industry_global, \
                                                    length_high_growth, sales_to_capital_flag)
+# tax_rate_list = [0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25]
+tax_rate_list = tax_rate_list_func(effective_tax_rate, marginal_tax_rate, length_high_growth, length_high_growth_stable,\
+                                   flag_terminal_tax)
+
+# nol_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+revenue_list = revenue_list_func(revenue_current, growth_list, length_high_growth)
+ebit_list = ebit_list_func(revenue_list, margin_list)
+nol_list = net_income_list_loss_func(net_income_loss_previous, ebit_list, length_high_growth, nol_initial_flag)
 
 
-
-tax_rate_list = [0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25]
-nol_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+## cost of capital
 cost_capital_list = [0.065, 0.065, 0.065, 0.065, 0.065, 0.0641, 0.0632, 0.0623, 0.0614, 0.0605]
-tax_terminal = 0.25
-terminal_roic = 0.0605
-terminal_cost_capital = 0.0605
 
-prob_failure = 0
-proceeds_failure = 0
-minority_interests = 0
-lease_flag = True
-lease_to_debt = 520971240
+
+
+
 
 
 
 ## present value --> growth period
-pv_growth, revenue_list, present_value_list= present_value_growth_period_func(revenue_current, growth_list, \
-                                                                         margin_list, tax_rate_list, \
-                                                                         nol_list, sales_to_capital_list, \
-                                                                         cost_capital_list)
+pv_growth, present_value_list= present_value_growth_period_func(revenue_list, ebit_list, growth_list,\
+                                                                margin_list, tax_rate_list, nol_list, \
+                                                                sales_to_capital_list, cost_capital_list)
 print(f'present value in growth period: {pv_growth}')
 print(f'list of revenue: {revenue_list}')
 
@@ -123,3 +155,5 @@ print(f'common stock equity value: {equity_value}')
 estimated_value, price_to_value = estimated_value_share_func(equity_value, num_share, price_current)
 print(f'estimate value: {estimated_value}')
 print(f'estimated value / price: {price_to_value}')
+
+1
