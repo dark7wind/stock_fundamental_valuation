@@ -1,6 +1,7 @@
 import unittest
 
-from src.firm_input import growth_list_direct_func, margin_list_direct_func, sales_to_capital_list_func
+from src.firm_input import growth_list_direct_func, margin_list_direct_func, sales_to_capital_list_func, \
+                           tax_rate_list_func
 
 class TestFirmInput(unittest.TestCase):
     def test_growth_list_direct_func(self):
@@ -56,3 +57,30 @@ class TestFirmInput(unittest.TestCase):
         result = sales_to_capital_list_func(revenue, invested_capital, industry_us, industry_global, \
                                             length_high_growth, flag)
         self.assertEqual(result, [1.36] * length_high_growth)
+
+    def test_tax_rate_list_func(self):
+        """
+        :return:
+        """
+        # test case 1
+        effective_tax_rate = 0.25
+        marginal_tax_rate = 0.25
+        length_high_growth = 10
+        length_high_growth_stable = 5
+        flag_terminal_tax = True
+
+        result = tax_rate_list_func(effective_tax_rate, marginal_tax_rate, length_high_growth,\
+                                    length_high_growth_stable, flag_terminal_tax)
+        self.assertEqual(result, [0.25]*10)
+
+        # test case 2
+        effective_tax_rate = 0.2
+        marginal_tax_rate = 0.25
+        length_high_growth = 10
+        length_high_growth_stable = 6
+        flag_terminal_tax = True
+
+        result = tax_rate_list_func(effective_tax_rate, marginal_tax_rate, length_high_growth, \
+                                    length_high_growth_stable, flag_terminal_tax)
+        self.assertEqual(result, [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.21250000000000002, 0.22500000000000003, \
+                                  0.23750000000000004, 0.25000000000000006])

@@ -1,7 +1,9 @@
 import unittest
 
-from src.firm_valuation import after_tax_ebit_func, present_value_func, terminal_value_func, equity_value_common_stock_func, \
-                               estimated_value_share_func, present_value_growth_period_func, present_value_terminal_func
+from src.firm_valuation import after_tax_ebit_func, present_value_func, terminal_value_func, \
+    equity_value_common_stock_func, estimated_value_share_func, present_value_growth_period_func, \
+    present_value_terminal_func, effective_tax_rate_func, net_income_list_loss_func, revenue_list_func, \
+    ebit_list_func
 
 class TestFirmValuation(unittest.TestCase):
     def test_after_tax_ebit_func(self):
@@ -122,6 +124,63 @@ class TestFirmValuation(unittest.TestCase):
                                         cost_capital_terminal, cost_capital_list)
         result = round(result)
         self.assertEqual(result, 20806)
+
+    def test_effective_tax_rate_func(self):
+        """
+        :return:
+        """
+        taxable_income = 2770000000
+        tax_paid = 620000000
+        marginal_tax_rate = 0.25
+        result = effective_tax_rate_func(taxable_income, tax_paid, marginal_tax_rate, \
+                                         estimate_effective_tax_rate=0.25, flag_avg=False)
+        self.assertEqual(result, 0.22382671480144403)
+
+    def test_net_income_list_loss_func(self):
+        """
+        :return:
+        """
+        # test case 1
+        net_income_loss_previous = 100
+        ebit_list = [80, 100, 100, 100, 100, 100, 200, 200, 200, 200]
+        length_high_growth = 10
+        flag = False
+        result = net_income_list_loss_func(net_income_loss_previous, ebit_list, length_high_growth, flag)
+        self.assertEqual(result, [0]*length_high_growth)
+
+        # test case 2
+        net_income_loss_previous = 100
+        ebit_list = [80, 10, 100, 100, 100, 100, 200, 200, 200, 200]
+        length_high_growth = 10
+        flag = True
+        result = net_income_list_loss_func(net_income_loss_previous, ebit_list, length_high_growth, flag)
+        self.assertEqual(result, [20, 10, 0, 0, 0, 0, 0, 0, 0, 0])
+
+    def test_revenue_list_func(self):
+        """
+        :return:
+        """
+        revenue_current = 43185
+        growth_list = [0.02, 0.02, 0.02, 0.02, 0.02, 0.0182, 0.0164, 0.0147, 0.0129, 0.0111]
+        length_high_growth = 10
+        result = revenue_list_func(revenue_current, growth_list, length_high_growth)
+        self.assertEqual(result, [43185, 44048.700000000004, 44929.674000000006, 45828.26748000001, 46744.83282960001,\
+                                  47679.72948619201, 48547.5005628407, 49343.67957207129, 50069.03166178073,\
+                                  50714.9221702177, 51277.857806307125])
+
+    def test_ebit_list_func(self):
+        """
+        :return:
+        """
+        revenue_list = [43185000000, 44048700000.0, 44929674000.0, 45828267480.0, 46744832829.6, 47679729486.192,\
+                        48548454157.43041, 49346590743.77857, 50070011764.08236, 50714913515.60374, 51277849055.626945]
+        margin_list = [0.07, 0.066, 0.064, 0.062, 0.06, 0.06, 0.06, 0.06, 0.06, 0.06]
+        result = ebit_list_func(revenue_list, margin_list)
+        self.assertEqual(result, [3083409000.0000005, 2965358484.0, 2933009118.7200003, 2898179635.4351997,\
+                                  2860783769.1715198, 2912907249.4458246, 2960795444.626714, 3004200705.8449416,\
+                                  3042894810.936224, 3076670943.3376164])
+
+
 
 if __name__ == '__main__':
     unittest.main()
