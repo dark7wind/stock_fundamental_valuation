@@ -4,14 +4,12 @@ from definitions import ROOT_DIR
 from yahoo_fin.stock_info import *
 
 TICKERS_DIR = os.path.join(ROOT_DIR, 'data/tickers/')
-FUNDAMENTAL_DIR = os.path.join(ROOT_DIR, 'data/fundamental/')
+FUNDAMENTAL_DIR = os.path.join(ROOT_DIR, 'data/fundamental/income_statement/')
 
-ticker = 'tsn'
 
-# income statement
 ## dow
 file_ticker = 'dow_tickers.csv'
-file_income_statement = 'dow_income_statement.csv'
+file_income_statement = 'income_statement_dow.csv'
 tickers_dow = list()
 with open(TICKERS_DIR+file_ticker, newline='') as csvfile:
     ticker_reader = csv.reader(csvfile, delimiter=',')
