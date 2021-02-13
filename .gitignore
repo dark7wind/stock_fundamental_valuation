@@ -126,7 +126,7 @@ venv.bak/
 dmypy.json
 
 # Pyre type checker
+.pyre/
 
 # database configure file
-
-.pyre/
+database/database_config/database.ymal
