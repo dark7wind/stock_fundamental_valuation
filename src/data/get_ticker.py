@@ -71,6 +71,8 @@ def get_ticker(write_to_local=False):
     print('number of stocks in SP500: {}'.format(len(df_tickers.loc[df_tickers['sp500']==True])))
     print('number of stocks in NASDAQ: {}'.format(len(df_tickers.loc[df_tickers['exchange']=='nasdaq'])))
 
+    return df_tickers
+
 if __name__ == '__main__':
     write_to_local = False
     get_ticker(write_to_local)
