@@ -3,6 +3,8 @@ import os
 from definitions import ROOT_DIR
 from yahoo_fin.stock_info import *
 
+pd.set_option('display.max_columns', None)
+
 TICKERS_DIR = os.path.join(ROOT_DIR, 'data/tickers/')
 FUNDAMENTAL_DIR = os.path.join(ROOT_DIR, 'data/fundamental/analysis_info/')
 
@@ -20,7 +22,7 @@ analysts_info_total = pd.DataFrame()
 for ticker in tickers_dow[0]:
     analysts_info = get_analysts_info(ticker)
 
-    
+
     analysts_info = analysts_info.T
     analysts_info = analysts_info.reset_index()
     analysts_info['ticker'] = ticker
