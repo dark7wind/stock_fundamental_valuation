@@ -2,16 +2,22 @@ import MySQLdb as mdb
 import pandas as pd
 import datetime
 import numpy as np
-from definitions import TICKERS_DIR
+import yaml
+from definitions import DATABASE_CONFIG_DIR, TICKERS_DIR
 from src.data.get_ticker import get_ticker
 
-# Obtain a database connection to the MySQL instance
-db_host = 'localhost'
-db_user = 'root'
-db_pass = 'password'
-db_name = 'securities_database'
+# load the database configuration
+with open(DATABASE_CONFIG_DIR) as f:
+    db_config = yaml.load(f, Loader=yaml.FullLoader)
 
-db = mdb.connect(host=db_host, user=db_user, passwd=db_pass, db=db_name, use_unicode=True, charset="utf8")
+# # Obtain a database connection to the MySQL instance
+# db_host = 'localhost'
+# db_user = 'root'
+# db_pass = 'password'
+# db_name = 'securities_database'
+
+db = mdb.connect(host=db_config['db_host'], user=db_config['db_user'], passwd=db_config['db_pass'],
+                 db=db_config['db_name'], use_unicode=True, charset="utf8")
 
 df = pd.DataFrame()
 def insert_stock_info_data_into_db(load_local=False):
@@ -19,10 +25,11 @@ def insert_stock_info_data_into_db(load_local=False):
     now = datetime.datetime.utcnow()
 
     # get tickers
-    load_local = True
     if load_local:
         file_name = 'all_tickers.csv'
         df = pd.read_csv(TICKERS_DIR+file_name)
+    else:
+        df = get_ticker()
 
     df['createdDate'] = now
     df['lastUpdatedDate'] = now
@@ -49,5 +56,5 @@ def insert_stock_info_data_into_db(load_local=False):
 
 
 if __name__ == '__main__':
-    load_local = True
+    load_local = False
     insert_stock_info_data_into_db(load_local)
