@@ -3,8 +3,9 @@ import pandas as pd
 import datetime
 import numpy as np
 import yaml
-from definitions import DATABASE_CONFIG_DIR, TICKERS_DIR
-from src.data.download_ticker import download_ticker
+from src.data.download_income_statement import download_income_statement
+from definitions import DATABASE_CONFIG_DIR, INCOME_STATEMENT_DIR
+
 
 # load the database configuration
 with open(DATABASE_CONFIG_DIR) as f:
@@ -13,26 +14,31 @@ with open(DATABASE_CONFIG_DIR) as f:
 
 db = mdb.connect(host=db_config['db_host'], user=db_config['db_user'], passwd=db_config['db_pass'],
                  db=db_config['db_name'], use_unicode=True, charset="utf8")
-
 df = pd.DataFrame()
-def insert_stock_info_data_into_db(load_local=False):
+
+def insert_income_statement_data_into_db(load_local=False):
+
+    # load income statement dataframe
+    df = download_income_statement()
+
     # create the time now (utc time)
     now = datetime.datetime.utcnow()
 
-    # get tickers
-    if load_local:
-        file_name = 'all_tickers.csv'
-        df = pd.read_csv(TICKERS_DIR+file_name)
-    else:
-        df = download_ticker()
+    # type - yearly or quarterly
+    type = 'yearly'
 
+
+    # to datetime
+    #df['endDate'] = pd.to_datetime( df['endDate'])
+    # createDate and lastUpdatedDate
     df['createdDate'] = now
     df['lastUpdatedDate'] = now
 
     # covert nan to empty
-    df = df.replace(np.nan, 'empty')
+    df = df.fillna(0)
+
     # create req strings
-    table_name = 'stock_info'
+    table_name = 'income_statement'
     columns = ','.join(df.columns.values)
     values = ("%s, " * len(df.columns))[:-2]
     req = """INSERT INTO %s (%s) VALUES (%s)""" % (table_name, columns, values)
@@ -47,9 +53,9 @@ def insert_stock_info_data_into_db(load_local=False):
         db.commit()
 
     mysql_cursor.close()
-
+    1
 
 
 if __name__ == '__main__':
-    load_local = False
-    insert_stock_info_data_into_db(load_local)
+    load_local = True
+    insert_income_statement_data_into_db(load_local)
