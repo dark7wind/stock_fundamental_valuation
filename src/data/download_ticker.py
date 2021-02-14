@@ -7,7 +7,7 @@ from yahoo_fin.stock_info import *
 
 
 
-def get_ticker(write_to_local=False):
+def download_ticker(write_to_local=False):
     # sp500
     sp500_tickers = tickers_sp500()
     if write_to_local:
@@ -75,4 +75,4 @@ def get_ticker(write_to_local=False):
 
 if __name__ == '__main__':
     write_to_local = False
-    get_ticker(write_to_local)
+    download_ticker(write_to_local)
