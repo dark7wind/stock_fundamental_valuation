@@ -1,4 +1,3 @@
-
 from yahoo_fin.stock_info import *
 
 def get_income_statement_single_stock(stock_id, ticker):
