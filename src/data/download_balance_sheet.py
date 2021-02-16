@@ -1,29 +1,49 @@
-import csv
+import MySQLdb as mdb
 import os
-from definitions import ROOT_DIR
+import yaml
+import datetime
+from src.data.get_balance_sheet_single_stock import get_balance_sheet_single_stock
 from yahoo_fin.stock_info import *
+from definitions import DATABASE_CONFIG_DIR, BALANCE_SHEET_DIR
 
-TICKERS_DIR = os.path.join(ROOT_DIR, 'data/tickers/')
-FUNDAMENTAL_DIR = os.path.join(ROOT_DIR, 'data/fundamental/balance_sheet/')
+def download_balance_sheet():
+    file_date = datetime.datetime.utcnow()
+    file_date = file_date.strftime("%Y%m%d")
+    file_balance_sheet = 'balance_sheet_sp500.csv'
+    1
+    if os.path.exists(BALANCE_SHEET_DIR+file_date+'_'+file_balance_sheet):
+        df_income_statement_total = pd.read_csv(BALANCE_SHEET_DIR+file_date+'_'+file_balance_sheet)
+        # print(df_income_statement_total.columns)
+        return df_income_statement_total
 
+    else:
+        # connect the database
+        with open(DATABASE_CONFIG_DIR) as f:
+            db_config = yaml.load(f, Loader=yaml.FullLoader)
 
-## dow
-file_ticker = 'dow_tickers.csv'
-file_balance_sheet = 'balance_sheet_dow.csv'
-tickers_dow = list()
-with open(TICKERS_DIR+file_ticker, newline='') as csvfile:
-    ticker_reader = csv.reader(csvfile, delimiter=',')
-    for row in ticker_reader:
-        tickers_dow.append(row)
+        db = mdb.connect(host=db_config['db_host'], user=db_config['db_user'], passwd=db_config['db_pass'],
+                         db=db_config['db_name'], use_unicode=True, charset="utf8")
 
-balance_sheet_total = pd.DataFrame()
-for ticker in tickers_dow[0]:
-    balance_sheet = get_balance_sheet(ticker, yearly=True)
-    balance_sheet = balance_sheet.T
-    balance_sheet = balance_sheet.reset_index()
-    balance_sheet['ticker'] = ticker
-    balance_sheet_total = balance_sheet_total.append(balance_sheet, ignore_index=True)
+        # select stockId and ticker from table stock_info
+        table_name = 'stock_info'
+        columns = ','.join(['stockId', 'ticker'])
+        req = """SELECT %s FROM %s WHERE SP500=TRUE""" % (columns, table_name)
+        get_ticker_cursor = db.cursor()
+        get_ticker_cursor.execute(req)
+        stockId_ticker = get_ticker_cursor.fetchall()
+        get_ticker_cursor.close()
 
-balance_sheet_total.to_csv(FUNDAMENTAL_DIR+file_balance_sheet, index=False)
+        # get the balance_sheet data from Yahoo
+        df_balance_sheet_total = pd.DataFrame()
+        for stock_id, ticker in stockId_ticker:
+            print(f'stockId: {stock_id}, ticker: {ticker}')
+            df_balance_sheet = get_balance_sheet_single_stock(stock_id, ticker)
+            df_balance_sheet_total = df_balance_sheet_total.append(df_balance_sheet, ignore_index=True)
 
-1
+        # write to csv
+        df_balance_sheet_total.to_csv(BALANCE_SHEET_DIR+file_date+'_'+file_balance_sheet, index=False)
+        # print(df_income_statement_total.columns)
+        return df_balance_sheet_total
+
+if __name__ == '__main__':
+    download_balance_sheet()

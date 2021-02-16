@@ -1,10 +1,8 @@
 import MySQLdb as mdb
-import csv
 import os
 import yaml
 import datetime
 from src.data.get_income_statemet_single_stock import get_income_statement_single_stock
-from definitions import ROOT_DIR
 from yahoo_fin.stock_info import *
 from definitions import DATABASE_CONFIG_DIR, INCOME_STATEMENT_DIR
 
