@@ -10,7 +10,7 @@ def download_balance_sheet():
     file_date = datetime.datetime.utcnow()
     file_date = file_date.strftime("%Y%m%d")
     file_balance_sheet = 'balance_sheet_sp500.csv'
-
+    1
     if os.path.exists(BALANCE_SHEET_DIR+file_date+'_'+file_balance_sheet):
         df_income_statement_total = pd.read_csv(BALANCE_SHEET_DIR+file_date+'_'+file_balance_sheet)
         # print(df_income_statement_total.columns)
