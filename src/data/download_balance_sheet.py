@@ -12,9 +12,9 @@ def download_balance_sheet():
     file_balance_sheet = 'balance_sheet_sp500.csv'
     1
     if os.path.exists(BALANCE_SHEET_DIR+file_date+'_'+file_balance_sheet):
-        df_income_statement_total = pd.read_csv(BALANCE_SHEET_DIR+file_date+'_'+file_balance_sheet)
+        df_balance_sheet_total = pd.read_csv(BALANCE_SHEET_DIR+file_date+'_'+file_balance_sheet)
         # print(df_income_statement_total.columns)
-        return df_income_statement_total
+        return df_balance_sheet_total
 
     else:
         # connect the database
