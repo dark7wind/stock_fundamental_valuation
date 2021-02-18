@@ -22,8 +22,8 @@ DROP TABLE IF EXISTS `securities_database`.`stock_info` ;
 
 CREATE TABLE IF NOT EXISTS `securities_database`.`stock_info` (
   `stockId` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `createdDate` DATE NULL,
-  `lastUpdatedDate` DATE NULL,
+  `createdDate` DATE NOT NULL,
+  `lastUpdatedDate` DATE NOT NULL,
   `ticker` VARCHAR(45) NOT NULL,
   `companyName` VARCHAR(255) NULL,
   `exchange` VARCHAR(255) NULL,
@@ -43,11 +43,12 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `securities_database`.`income_statement` ;
 
 CREATE TABLE IF NOT EXISTS `securities_database`.`income_statement` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `stockId` INT UNSIGNED NOT NULL,
   `endDate` DATE NOT NULL,
-  `createdDate` VARCHAR(45) NULL,
-  `lastUpdatedDate` VARCHAR(45) NULL,
-  `type` VARCHAR(45) NULL,
+  `createdDate` VARCHAR(45) NOT NULL,
+  `lastUpdatedDate` VARCHAR(45) NOT NULL,
+  `type` VARCHAR(45) NOT NULL,
   `ticker` VARCHAR(45) NOT NULL,
   `researchDevelopment` BIGINT NULL,
   `effectOfAccountingCharges` BIGINT NULL,
@@ -72,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `securities_database`.`income_statement` (
   `netIncomeFromContinuingOps` BIGINT NULL,
   `netIncomeApplicableToCommonShares` BIGINT NULL,
   INDEX `fk_income_statement_stock_info1_idx` (`stockId` ASC) VISIBLE,
-  PRIMARY KEY (`stockId`, `endDate`),
+  PRIMARY KEY (`id`),
   CONSTRAINT `fk_income_statement_stock_info1`
     FOREIGN KEY (`stockId`)
     REFERENCES `securities_database`.`stock_info` (`stockId`)
