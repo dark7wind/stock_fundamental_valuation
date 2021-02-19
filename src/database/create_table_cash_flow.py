@@ -19,15 +19,11 @@ def insert_cash_flow_data_into_db():
     # create the time now (utc time)
     now = datetime.datetime.utcnow()
 
-    # type - yearly or quarterly  ## to do
-    type = 'yearly'
-
     # to datetime
     # df['endDate'] = pd.to_datetime( df['endDate'])
     # createDate and lastUpdatedDate
     df['createdDate'] = now
     df['lastUpdatedDate'] = now
-    df['type'] = type
 
     # covert nan to empty
     df = df.fillna(0)

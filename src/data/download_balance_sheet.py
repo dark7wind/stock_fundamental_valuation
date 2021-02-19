@@ -2,7 +2,8 @@ import MySQLdb as mdb
 import os
 import yaml
 import datetime
-from src.data.get_balance_sheet_single_stock import get_balance_sheet_single_stock
+from src.data.get_fundamental_data_single_stock import get_balance_sheet_single_stock_yearly, \
+    get_balance_sheet_single_stock_quarterly
 from yahoo_fin.stock_info import *
 from definitions import DATABASE_CONFIG_DIR, BALANCE_SHEET_DIR
 
@@ -34,11 +35,19 @@ def download_balance_sheet():
         get_ticker_cursor.close()
 
         # get the balance_sheet data from Yahoo
-        df_balance_sheet_total = pd.DataFrame()
+        df_balance_sheet_yearly_total = pd.DataFrame()
+        df_balance_sheet_quarterly_total = pd.DataFrame()
         for stock_id, ticker in stockId_ticker:
             print(f'stockId: {stock_id}, ticker: {ticker}')
-            df_balance_sheet = get_balance_sheet_single_stock(stock_id, ticker)
-            df_balance_sheet_total = df_balance_sheet_total.append(df_balance_sheet, ignore_index=True)
+            df_balance_sheet_yearly = get_balance_sheet_single_stock_yearly(stock_id, ticker)
+            df_balance_sheet_yearly_total = df_balance_sheet_yearly_total.append(df_balance_sheet_yearly,
+                                                                                 ignore_index=True)
+            df_balance_sheet_quarterly = get_balance_sheet_single_stock_quarterly(stock_id, ticker)
+            df_balance_sheet_quarterly_total = df_balance_sheet_quarterly_total.append(df_balance_sheet_quarterly,
+                                                                                 ignore_index=True)
+
+        # concat two dataframes
+        df_balance_sheet_total = pd.concat([df_balance_sheet_yearly_total, df_balance_sheet_quarterly_total])
 
         # write to csv
         df_balance_sheet_total.to_csv(BALANCE_SHEET_DIR+file_date+'_'+file_balance_sheet, index=False)

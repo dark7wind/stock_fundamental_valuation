@@ -2,7 +2,8 @@ import MySQLdb as mdb
 import os
 import yaml
 import datetime
-from src.data.get_cash_flow_single_stock import get_cash_flow_single_stock
+from src.data.get_fundamental_data_single_stock import get_cash_flow_single_stock_yearly, \
+    get_cash_flow_single_stock_quarterly
 from yahoo_fin.stock_info import *
 from definitions import DATABASE_CONFIG_DIR, CASH_FLOW_DIR
 
@@ -33,12 +34,18 @@ def download_cahs_flow():
         stockId_ticker = get_ticker_cursor.fetchall()
         get_ticker_cursor.close()
 
-        # get the balance_sheet data from Yahoo
-        df_cash_flow_total = pd.DataFrame()
+        # get the cash_flow data from Yahoo
+        df_cash_flow_yearly_total = pd.DataFrame()
+        df_cash_flow_quarterly_total = pd.DataFrame()
         for stock_id, ticker in stockId_ticker:
             print(f'stockId: {stock_id}, ticker: {ticker}')
-            df_cash_flow = get_cash_flow_single_stock(stock_id, ticker)
-            df_cash_flow_total = df_cash_flow_total.append(df_cash_flow, ignore_index=True)
+            df_cash_flow_yearly = get_cash_flow_single_stock_yearly(stock_id, ticker)
+            df_cash_flow_yearly_total = df_cash_flow_yearly_total.append(df_cash_flow_yearly, ignore_index=True)
+            df_cash_flow_quarterly = get_cash_flow_single_stock_quarterly(stock_id, ticker)
+            df_cash_flow_quarterly_total = df_cash_flow_quarterly_total.append(df_cash_flow_quarterly, ignore_index=True)
+
+        # concat two dataframes
+        df_cash_flow_total = pd.concat([df_cash_flow_yearly_total, df_cash_flow_quarterly_total])
 
         # write to csv
         df_cash_flow_total.to_csv(CASH_FLOW_DIR + file_date + '_' + file_cash_flow, index=False)
