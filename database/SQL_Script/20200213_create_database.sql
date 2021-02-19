@@ -109,6 +109,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `securities_database`.`cash_flow` ;
 
 CREATE TABLE IF NOT EXISTS `securities_database`.`cash_flow` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `stockId` INT UNSIGNED NOT NULL,
   `endDate` VARCHAR(45) NOT NULL,
   `createdDate` DATE NOT NULL,
@@ -135,7 +136,7 @@ CREATE TABLE IF NOT EXISTS `securities_database`.`cash_flow` (
   `changeToNetincome` BIGINT NULL,
   `capitalExpenditures` BIGINT NULL,
   `effectOfExchangeRate` BIGINT NULL,
-  PRIMARY KEY (`stockId`, `endDate`),
+  PRIMARY KEY (`id`),
   INDEX `fk_cash_flow_stock_info1_idx` (`stockId` ASC) VISIBLE,
   CONSTRAINT `fk_cash_flow_stock_info1`
     FOREIGN KEY (`stockId`)
@@ -151,6 +152,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `securities_database`.`balance_sheet` ;
 
 CREATE TABLE IF NOT EXISTS `securities_database`.`balance_sheet` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `stockId` INT UNSIGNED NOT NULL,
   `endDate` DATE NOT NULL,
   `createdDate` DATE NOT NULL,
@@ -186,7 +188,7 @@ CREATE TABLE IF NOT EXISTS `securities_database`.`balance_sheet` (
   `deferredLongTermAssetCharges` BIGINT NULL,
   `minorityInterest` BIGINT NULL,
   `deferredLongTermLiab` BIGINT NULL,
-  PRIMARY KEY (`stockId`, `endDate`),
+  PRIMARY KEY (`id`),
   INDEX `fk_balance_sheet_stock_info1_idx` (`stockId` ASC) VISIBLE,
   CONSTRAINT `fk_balance_sheet_stock_info1`
     FOREIGN KEY (`stockId`)
