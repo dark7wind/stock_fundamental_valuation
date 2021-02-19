@@ -22,10 +22,6 @@ def insert_income_statement_data_into_db():
     # create the time now (utc time)
     now = datetime.datetime.utcnow()
 
-    # type - yearly or quarterly  ## to do
-    type = 'yearly'
-
-
     # to datetime
     #df['endDate'] = pd.to_datetime( df['endDate'])
     # createDate and lastUpdatedDate
