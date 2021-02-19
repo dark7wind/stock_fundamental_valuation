@@ -34,7 +34,7 @@ def download_cahs_flow():
         stockId_ticker = get_ticker_cursor.fetchall()
         get_ticker_cursor.close()
 
-        # get the balance_sheet data from Yahoo
+        # get the cash_flow data from Yahoo
         df_cash_flow_yearly_total = pd.DataFrame()
         df_cash_flow_quarterly_total = pd.DataFrame()
         for stock_id, ticker in stockId_ticker:
