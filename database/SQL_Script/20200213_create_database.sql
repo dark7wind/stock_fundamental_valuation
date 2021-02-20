@@ -88,13 +88,13 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `securities_database`.`stock_statistics` ;
 
 CREATE TABLE IF NOT EXISTS `securities_database`.`stock_statistics` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `stockId` INT UNSIGNED NOT NULL,
-  `createdDate` DATE NULL,
-  `lastUpdatedDate` DATE NULL,
-  `endDate` DATE NULL,
-  `sharesBasic` INT NULL,
-  `sharesDiluted` INT UNSIGNED NULL,
-  PRIMARY KEY (`stockId`),
+  `ticker` VARCHAR(45) NOT NULL,
+  `createdDate` DATE NOT NULL,
+  `lastUpdatedDate` DATE NOT NULL,
+  `sharesOutstanding` VARCHAR(32) NULL,
+  PRIMARY KEY (`id`),
   CONSTRAINT `fk_stock_statistics_stock_info1`
     FOREIGN KEY (`stockId`)
     REFERENCES `securities_database`.`stock_info` (`stockId`)
