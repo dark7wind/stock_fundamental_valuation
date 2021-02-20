@@ -85,3 +85,17 @@ def get_cash_flow_single_stock_quarterly(stock_id, ticker):
         print('no data')
         return None
 
+def get_stock_statistics_single_stock(stock_id, ticker):
+    try:
+        statistics = get_stats(ticker)
+        print('get the statistics data')
+        statistics = statistics.set_index(['Attribute'])
+        statistics = statistics.T
+        statistics = statistics.reset_index()
+        statistics.drop(columns=['index'], inplace=True)
+        statistics['ticker'] = ticker
+        statistics['stockId'] = stock_id
+        return statistics
+    except Exception:
+        print('no data')
+        return None
