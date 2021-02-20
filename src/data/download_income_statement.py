@@ -29,7 +29,7 @@ def download_income_statement():
         # select stockId and ticker from table stock_info
         table_name = 'stock_info'
         columns = ','.join(['stockId', 'ticker'])
-        req = """SELECT %s FROM %s WHERE sp500 = TRUE""" % (columns, table_name)
+        req = """SELECT %s FROM %s WHERE sp500=TRUE """ % (columns, table_name)
         get_ticker_cursor = db.cursor()
         get_ticker_cursor.execute(req)
         stockId_ticker = get_ticker_cursor.fetchall()
@@ -46,6 +46,7 @@ def download_income_statement():
             df_income_statement_quarterly = get_income_statement_single_stock_quarterly(stock_id, ticker)
             df_income_statement_quarterly_total = df_income_statement_quarterly_total.append(
                 df_income_statement_quarterly, ignore_index=True)
+
 
         # concat two dataframes
         df_income_statement_total = pd.concat([df_income_statement_yearly_total, df_income_statement_quarterly_total])
