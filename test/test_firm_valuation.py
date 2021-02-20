@@ -1,6 +1,6 @@
 import unittest
 
-from src.firm_valuation import after_tax_ebit_func, present_value_func, terminal_value_func, \
+from src.valuation.valuation_fcff import after_tax_ebit_func, present_value_func, terminal_value_func, \
     equity_value_common_stock_func, estimated_value_share_func, present_value_growth_period_func, \
     present_value_terminal_func, effective_tax_rate_func, net_income_list_loss_func, revenue_list_func, \
     ebit_list_func
