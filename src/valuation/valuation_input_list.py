@@ -1,6 +1,3 @@
-
-
-
 def growth_list_direct_func(r_gr_next, r_gr_high, length_high_growth, length_high_growth_stable, r_riskfree,\
                             flag_gr_terminal_direct, r_gr_terminal_direct):
     """
@@ -115,19 +112,3 @@ def tax_rate_list_func(effective_tax_rate, marginal_tax_rate, length_high_growth
             tax_rate_list.append(tax_rate)
 
     return tax_rate_list
-
-
-
-
-
-
-effective_tax_rate = 0.25
-marginal_tax_rate = 0.25
-length_high_growth = 10
-length_high_growth_stable = 5
-flag_terminal_tax = True
-
-test = tax_rate_list_func(effective_tax_rate, marginal_tax_rate, length_high_growth, length_high_growth_stable,\
-                          flag_terminal_tax)
-
-1
