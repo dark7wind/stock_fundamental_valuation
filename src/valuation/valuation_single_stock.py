@@ -4,7 +4,7 @@ from src.valuation.valuation_input_list import *
 
 
 def valuation_single_stock(ticker, manual_input=True):
-    df_income_statement, df_balance_sheet = get_input_finance_func(ticker)
+    df_income_statement, df_balance_sheet, df_stock_statics = get_input_finance_func(ticker)
     df_income_statement_yearly = df_income_statement.loc[(df_income_statement['type']=='yearly')]
     df_balance_sheet_yearly = df_balance_sheet.loc[(df_balance_sheet['type']=='yearly')]
 
@@ -29,7 +29,18 @@ def valuation_single_stock(ticker, manual_input=True):
 
     non_operating_assets = 0 # default (to do)
     options = 0 # default (to do)
-    num_share = 294790000 # to do --> extract from statistics
+
+    # outstanding shares
+    df_stock_statics_current = df_stock_statics.loc[df_stock_statics['lastUpdatedDate'] == \
+                                                                 df_stock_statics['lastUpdatedDate'].max()]
+    num_share = df_stock_statics_current['sharesOutstanding'][0]
+    if num_share[-1] == 'B':
+        num_share = float(num_share[: -1]) * 10**9
+    elif num_share[-1] == 'M':
+        num_share = float(num_share[: -1]) * 10**6
+    # num_share = 294790000 # to do --> extract from statistics
+
+
     price_current = 64.75 # to do --> extract from price database
 
     marginal_tax_rate = 0.25
