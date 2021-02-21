@@ -37,7 +37,18 @@ def get_input_finance_func(ticker, read_from_sql=True):
         ## create the dataframe
         df_balance_sheet = pd.DataFrame(balance_sheet, columns=columns_list)
 
-        return df_income_statement, df_balance_sheet
+        # stock_statistics
+        table_name = 'stock_statistics'
+        columns_list = ['createdDate', 'lastUpdatedDate', 'sharesOutstanding']
+        columns = ','.join(columns_list)
+        req = """SELECT %s FROM %s WHERE ticker='%s' """ % (columns, table_name, ticker)
+        stock_statistics_cursor = db.cursor()
+        stock_statistics_cursor.execute(req)
+        stock_statistics = stock_statistics_cursor.fetchall()
+        ## create the dataframe
+        df_stock_statistics = pd.DataFrame(stock_statistics, columns=columns_list)
+
+        return df_income_statement, df_balance_sheet, df_stock_statistics
 
     else:
         pass
