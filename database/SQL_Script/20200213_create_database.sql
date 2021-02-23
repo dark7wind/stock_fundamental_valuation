@@ -198,6 +198,68 @@ CREATE TABLE IF NOT EXISTS `securities_database`.`balance_sheet` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `securities_database`.`income_statement_TTM`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `securities_database`.`income_statement_TTM` ;
+
+CREATE TABLE IF NOT EXISTS `securities_database`.`income_statement_TTM` (
+  `Id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `StockId` INT UNSIGNED NOT NULL,
+  `Date` VARCHAR(45) NOT NULL,
+  `CreatedDate` DATE NOT NULL,
+  `LastUpdatedDate` DATE NOT NULL,
+  `Type` VARCHAR(45) NOT NULL,
+  `Ticker` VARCHAR(45) NOT NULL,
+  `TotalRevenue` BIGINT NULL,
+  `CostofRevenue` BIGINT NULL,
+  `GrossProfit` BIGINT NULL,
+  `OperatingExpense` BIGINT NULL,
+  `OperatingIncome` BIGINT NULL,
+  `NetNonOperatingInterestIncomeExpense` BIGINT NULL,
+  `OtherIncomeExpense` BIGINT NULL,
+  `PretaxIncome` BIGINT NULL,
+  `TaxProvision` BIGINT NULL,
+  `NetIncomeCommonStockholders` BIGINT NULL,
+  `DilutedNIAvailabletoComStockholders` BIGINT NULL,
+  `BasicEPS` BIGINT NULL,
+  `DilutedEPS` BIGINT NULL,
+  `BasicAverageShares` BIGINT NULL,
+  `DilutedAverageShares` BIGINT NULL,
+  `TotalOperatingIncomeasReported` BIGINT NULL,
+  `TotalExpenses` BIGINT NULL,
+  `NetIncomefromContinuingDiscontinuedOperation` BIGINT NULL,
+  `NormalizedIncome` BIGINT NULL,
+  `InterestExpense` BIGINT NULL,
+  `NetInterestIncome` BIGINT NULL,
+  `EBIT` BIGINT NULL,
+  `ReconciledCostofRevenue` BIGINT NULL,
+  `ReconciledDepreciation` BIGINT NULL,
+  `NetIncomefromContinuingOperationNetMinorityInterest` BIGINT NULL,
+  `TotalUnusualItemsExcludingGoodwill` BIGINT NULL,
+  `TotalUnusualItems` BIGINT NULL,
+  `NormalizedEBITDA` BIGINT NULL,
+  `TaxRateforCalcs` BIGINT NULL,
+  `TaxEffectofUnusualItems` BIGINT NULL,
+  `InterestIncome` BIGINT NULL,
+  `EBITDA` BIGINT NULL,
+  `EarningsfromEquityInterestNetofTax` BIGINT NULL,
+  `AverageDilutionEarnings` BIGINT NULL,
+  `CreditLossesProvision` BIGINT NULL,
+  `NonInterestExpense` BIGINT NULL,
+  `INTEREST_INCOME_AFTER_PROVISION_FOR_LOAN_LOSS` BIGINT NULL,
+  `TotalMoneyMarketInvestments` BIGINT NULL,
+  `RentExpenseSupplemental` BIGINT NULL,
+  `OtherNonOperatingIncomeExpenses` BIGINT NULL,
+  `SpecialIncomeCharges` BIGINT NULL,
+  `IncomefromAssociatesOtherParticipatingInterests` BIGINT NULL,
+  PRIMARY KEY (`Id`))
+ENGINE = InnoDB;
+
+
+
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
