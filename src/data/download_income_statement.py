@@ -54,7 +54,7 @@ def download_income_statement():
         # write to csv
         df_income_statement_total.to_csv(INCOME_STATEMENT_DIR+file_date+'_'+file_income_statement, index=False)
         # print(df_income_statement_total.columns)
-        return df_income_statement_yearly_total
+        return df_income_statement_total
 
 
 if __name__ == '__main__':
