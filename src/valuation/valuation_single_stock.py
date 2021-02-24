@@ -2,30 +2,45 @@ from src.valuation.valuation_input_finance import get_input_finance_func
 from src.valuation.valuation_fcff import *
 from src.valuation.valuation_input_list import *
 
+LOAD_TTM = True
 
 def valuation_single_stock(ticker, manual_input=True):
-    df_income_statement, df_balance_sheet, df_stock_statics = get_input_finance_func(ticker)
-    df_income_statement_yearly = df_income_statement.loc[(df_income_statement['type']=='yearly')]
-    df_balance_sheet_yearly = df_balance_sheet.loc[(df_balance_sheet['type']=='yearly')]
+    if not LOAD_TTM:
+        df_income_statement, df_balance_sheet, df_stock_statics = get_input_finance_func(ticker, read_from_sql=True,
+                                                                                         read_TTM=False)
+        df_income_statement_yearly = df_income_statement.loc[(df_income_statement['type'] == 'yearly')]
+        df_balance_sheet_yearly = df_balance_sheet.loc[(df_balance_sheet['type'] == 'yearly')]
 
-    ## to do -> use yearly or quarterly -> now use yearly
-    df_income_statement_current = df_income_statement_yearly.loc[df_income_statement_yearly['endDate'] == \
-                                                                 df_income_statement_yearly['endDate'].max()]
-    df_balance_sheet_current = df_balance_sheet_yearly.loc[df_balance_sheet_yearly['endDate'] == \
-                                                                 df_balance_sheet_yearly['endDate'].max()]
+        ## to do -> use yearly or quarterly -> now use yearly
+        df_income_statement_current = df_income_statement_yearly.loc[df_income_statement_yearly['endDate'] == \
+                                                                     df_income_statement_yearly['endDate'].max()]
+        df_balance_sheet_current = df_balance_sheet_yearly.loc[df_balance_sheet_yearly['endDate'] == \
+                                                               df_balance_sheet_yearly['endDate'].max()]
+        # total revenue, income before tax, income tax expense
+        total_revenue = df_income_statement_current['totalRevenue'].iloc[0]
+        income_before_tax = df_income_statement_current['incomeBeforeTax'].iloc[0]
+        income_tax_expense = df_income_statement_current['incomeTaxExpense'].iloc[0]
+
+    else:
+        df_income_statement, df_balance_sheet, df_stock_statics = get_input_finance_func(ticker, read_from_sql=True,
+                                                                                         read_TTM=True)
+        df_income_statement_current = df_income_statement.loc[df_income_statement['LastUpdatedDate'] == \
+                                                                      df_income_statement['LastUpdatedDate'].max()]
+        df_balance_sheet_current = df_balance_sheet.loc[df_balance_sheet['endDate'] == \
+                                                               df_balance_sheet['endDate'].max()]
+
+        # total revenue, income before tax, income tax expense
+        total_revenue = df_income_statement_current['TotalRevenue'].iloc[0] * 1000
+        income_before_tax = df_income_statement_current['PretaxIncome'].iloc[0] * 1000
+        income_tax_expense = df_income_statement_current['TaxProvision'].iloc[0] * 1000
 
 
-    total_revenue = df_income_statement_current['totalRevenue'][0]
-    income_before_tax = df_income_statement_current['incomeBeforeTax'][0]
-    income_tax_expense = df_income_statement_current['incomeTaxExpense'][0]
-
-    short_term_debt = df_balance_sheet_current['shortLongTermDebt'][0]
-    long_term_debt = df_balance_sheet_current['longTermDebt'][0]
+    short_term_debt = df_balance_sheet_current['shortLongTermDebt'].iloc[0]
+    long_term_debt = df_balance_sheet_current['longTermDebt'].iloc[0]
     debt_bv = short_term_debt + long_term_debt
 
-    cash = df_balance_sheet_current['cash'][0]
-    minority_interests = df_balance_sheet_current['minorityInterest'][0]
-    # minority_interests = 0 # temp
+    cash = df_balance_sheet_current['cash'].iloc[0]
+    minority_interests = df_balance_sheet_current['minorityInterest'].iloc[0]
 
     non_operating_assets = 0 # default (to do)
     options = 0 # default (to do)
@@ -33,7 +48,7 @@ def valuation_single_stock(ticker, manual_input=True):
     # outstanding shares
     df_stock_statics_current = df_stock_statics.loc[df_stock_statics['lastUpdatedDate'] == \
                                                                  df_stock_statics['lastUpdatedDate'].max()]
-    num_share = df_stock_statics_current['sharesOutstanding'][0]
+    num_share = df_stock_statics_current['sharesOutstanding'].iloc[0]
     if num_share[-1] == 'B':
         num_share = float(num_share[: -1]) * 10**9
     elif num_share[-1] == 'M':
@@ -41,7 +56,7 @@ def valuation_single_stock(ticker, manual_input=True):
     # num_share = 294790000 # to do --> extract from statistics
 
 
-    price_current = 64.75 # to do --> extract from price database
+    price_current =  64.75 # to do --> extract from price database
 
     marginal_tax_rate = 0.25
     effective_tax_rate = effective_tax_rate_func(income_before_tax, income_tax_expense, marginal_tax_rate, \
@@ -58,7 +73,7 @@ def valuation_single_stock(ticker, manual_input=True):
         converge_year = 5
         r_riskfree = 0.0111
         sales_to_capital_flag = "industry_us"
-        invested_capital = 26037  # to do
+        invested_capital = 26037000  # to do
         industry_us = 1.36 # to do
         industry_global = 1.66 # to do
     else:
