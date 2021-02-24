@@ -2,7 +2,7 @@ from src.valuation.valuation_input_finance import get_input_finance_func
 from src.valuation.valuation_fcff import *
 from src.valuation.valuation_input_list import *
 
-LOAD_TTM = True
+LOAD_TTM = False
 
 def valuation_single_stock(ticker, manual_input=True):
     if not LOAD_TTM:
@@ -34,16 +34,26 @@ def valuation_single_stock(ticker, manual_input=True):
         income_before_tax = df_income_statement_current['PretaxIncome'].iloc[0] * 1000
         income_tax_expense = df_income_statement_current['TaxProvision'].iloc[0] * 1000
 
+    print(f'current year revenue: {total_revenue}')
+    print(f'current year income before tax: {income_before_tax}')
+    print(f'current year tax expense: {income_tax_expense}')
+
 
     short_term_debt = df_balance_sheet_current['shortLongTermDebt'].iloc[0]
     long_term_debt = df_balance_sheet_current['longTermDebt'].iloc[0]
     debt_bv = short_term_debt + long_term_debt
+    print(f'book value of debt: {debt_bv}')
 
     cash = df_balance_sheet_current['cash'].iloc[0]
+    print(f'cash and marketable securities: {cash}')
     minority_interests = df_balance_sheet_current['minorityInterest'].iloc[0]
+    #minority_interests = 0
+    print(f'minority interest: {minority_interests}')
 
     non_operating_assets = 0 # default (to do)
+    print(f'non operating assets: {non_operating_assets}')
     options = 0 # default (to do)
+    print(f'options: {options}')
 
     # outstanding shares
     df_stock_statics_current = df_stock_statics.loc[df_stock_statics['lastUpdatedDate'] == \
@@ -53,36 +63,39 @@ def valuation_single_stock(ticker, manual_input=True):
         num_share = float(num_share[: -1]) * 10**9
     elif num_share[-1] == 'M':
         num_share = float(num_share[: -1]) * 10**6
-    # num_share = 294790000 # to do --> extract from statistics
+    print(f'number of shares outstanding: {num_share}')
 
+    price_current = 33.15 #64.75 # to do --> extract from price database
+    print(f'current price: {price_current}')
 
-    price_current =  64.75 # to do --> extract from price database
 
     marginal_tax_rate = 0.25
     effective_tax_rate = effective_tax_rate_func(income_before_tax, income_tax_expense, marginal_tax_rate, \
                                                        estimate_effective_tax_rate=0.25, flag_avg=False)
+    print(f'marginal tax rate: {marginal_tax_rate}')
+    print(f'effective tax rate: {effective_tax_rate}')
 
     if manual_input:
         ## user manual input
-        r_gr_next = 0.02
-        r_gr_high = 0.02
+        r_gr_next = 0.05
+        r_gr_high = 0.05
         length_high_growth = 10
         length_high_growth_stable = 5
-        margin_next_year = 0.07
-        margin_target = 0.06
-        converge_year = 5
-        r_riskfree = 0.0111
+        margin_next_year = 0.0266
+        margin_target = 0.0266
+        converge_year = 10
+        r_riskfree = 0.0137
         sales_to_capital_flag = "industry_us"
         invested_capital = 26037000  # to do
-        industry_us = 1.36 # to do
-        industry_global = 1.66 # to do
+        industry_us = 4.26 # to do
+        industry_global = 3.03 # to do
     else:
         pass
 
     ## R&D capitalization
 
     ## Lease capitalization
-    lease_flag = True
+    lease_flag = False #True
     lease_to_debt = 520971240  # to do
 
     ## default assumption
@@ -102,36 +115,44 @@ def valuation_single_stock(ticker, manual_input=True):
     ## growth list
     growth_list = growth_list_direct_func(r_gr_next, r_gr_high, length_high_growth, length_high_growth_stable, \
                                           r_riskfree, flag_gr_terminal_direct, r_gr_terminal_direct)
+    print(f'growth_list: {growth_list}')
+
     ## margin list
     margin_list = margin_list_direct_func(margin_next_year, margin_target, converge_year, length_high_growth)
+    print(f'margin list: {margin_list}')
 
     ## sales to capital list
     sales_to_capital_list = sales_to_capital_list_func(total_revenue, invested_capital, industry_us, industry_global, \
                                                        length_high_growth, sales_to_capital_flag)
+    print(f'sales to capital list: {sales_to_capital_list}')
 
     ## tax rate list
     tax_rate_list = tax_rate_list_func(effective_tax_rate, marginal_tax_rate, length_high_growth,
                                        length_high_growth_stable, \
                                        flag_terminal_tax)
+    print(f'tax rate list: {tax_rate_list}')
 
     ## revenue list
     revenue_list = revenue_list_func(total_revenue, growth_list, length_high_growth)
+    print(f'revenue list: {revenue_list}')
 
     ## EBIT list
     ebit_list = ebit_list_func(revenue_list, margin_list)
+    print(f'EBIT list: {ebit_list}')
 
     ## Net operating lost list
     nol_list = net_income_list_loss_func(net_income_loss_previous, ebit_list, length_high_growth, nol_initial_flag)
+    print(f'Net operating lost list: {nol_list}')
 
     ## cost of capital list  ## to do
     cost_capital_list = [0.065, 0.065, 0.065, 0.065, 0.065, 0.0641, 0.0632, 0.0623, 0.0614, 0.0605]
+    print(f'cost of capital list: {cost_capital_list}')
 
     ## present value --> growth period
     pv_growth, present_value_list = present_value_growth_period_func(revenue_list, ebit_list, growth_list, \
                                                                      margin_list, tax_rate_list, nol_list, \
                                                                      sales_to_capital_list, cost_capital_list)
     print(f'present value in growth period: {pv_growth}')
-    print(f'list of revenue: {revenue_list}')
 
     ## present_value --> terminal period
     pv_terminal = present_value_terminal_func(revenue_list, growth_list[-1], margin_list, tax_terminal, \
@@ -158,12 +179,12 @@ def valuation_single_stock(ticker, manual_input=True):
     ## estimated value
     estimated_value, price_to_value = estimated_value_share_func(equity_value, num_share, price_current)
     print(f'estimate value: {estimated_value}')
-    print(f'estimated value / price: {price_to_value}')
+    print(f'price / estimated value: {price_to_value}')
 
     return estimated_value, price_to_value
     1
 
 
 if __name__ == '__main__':
-    ticker = 'TSN'
+    ticker = 'KR' #'TSN'
     valuation_single_stock(ticker)
