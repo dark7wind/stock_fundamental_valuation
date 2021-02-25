@@ -1,4 +1,4 @@
-from src.data.scraping.scraping_fundamental_function import *
+from src.data.scraping_fundamental_function import *
 import MySQLdb as mdb
 import os
 import yaml

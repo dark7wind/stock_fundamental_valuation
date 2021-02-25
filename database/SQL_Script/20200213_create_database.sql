@@ -257,8 +257,26 @@ CREATE TABLE IF NOT EXISTS `securities_database`.`income_statement_TTM` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `securities_database`.`historical_price`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `securities_database`.`historical_price`;
 
-
+CREATE TABLE IF NOT EXISTS `securities_database`.`historical_price` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `stockId` INT UNSIGNED NOT NULL,
+  `date` VARCHAR(45) NOT NULL,
+  `createdDate` DATE NOT NULL,
+  `lastUpdatedDate` DATE NOT NULL,
+  `ticker` VARCHAR(45) NOT NULL,
+  `open` BIGINT NULL,
+  `high` BIGINT NULL,
+  `low` BIGINT NULL,
+  `close` BIGINT NULL,
+  `adjclose` BIGINT NULL,
+  `volume` BIGINT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
