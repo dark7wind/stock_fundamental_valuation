@@ -257,6 +257,13 @@ def present_value_terminal_func(revenue_list, growth_rate_terminal, margin_list,
     terminal_present_value = present_value_func(value_terminal, cost_capital_list)
     return terminal_present_value
 
+def invested_capital_func(bv_equity, bv_debt, cash, flag_captalize_lease=False, flag_captalize_rd=False):
+    if not flag_captalize_lease and not flag_captalize_rd:
+        return bv_equity + bv_debt - cash
+    elif flag_captalize_lease and not flag_captalize_rd:
+        print(2)
+    elif not flag_captalize_lease and flag_captalize_rd:
+        print(3)
+    elif flag_captalize_lease and flag_captalize_lease:
+        print(4)
 
-
-1

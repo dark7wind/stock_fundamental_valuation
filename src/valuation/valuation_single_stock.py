@@ -1,4 +1,4 @@
-from src.valuation.valuation_input_finance import get_input_finance_func
+from src.valuation.valuation_input_finance import get_input_finance_func, get_input_price_func
 from src.valuation.valuation_fcff import *
 from src.valuation.valuation_input_list import *
 
@@ -43,6 +43,8 @@ def valuation_single_stock(ticker, manual_input=True):
     long_term_debt = df_balance_sheet_current['longTermDebt'].iloc[0]
     debt_bv = short_term_debt + long_term_debt
     print(f'book value of debt: {debt_bv}')
+    equity_bv = df_balance_sheet_current['totalStockholderEquity'].iloc[0]
+    print(f'book value of equity: {equity_bv}')
 
     cash = df_balance_sheet_current['cash'].iloc[0]
     print(f'cash and marketable securities: {cash}')
@@ -65,7 +67,8 @@ def valuation_single_stock(ticker, manual_input=True):
         num_share = float(num_share[: -1]) * 10**6
     print(f'number of shares outstanding: {num_share}')
 
-    price_current = 33.15 #64.75 # to do --> extract from price database
+    # get the price from database
+    price_current = get_input_price_func(ticker)['close'].iloc[0]
     print(f'current price: {price_current}')
 
 
@@ -75,18 +78,22 @@ def valuation_single_stock(ticker, manual_input=True):
     print(f'marginal tax rate: {marginal_tax_rate}')
     print(f'effective tax rate: {effective_tax_rate}')
 
+    invested_capital = invested_capital_func(equity_bv, debt_bv, cash)
+    print(f'invested capital: {invested_capital}')
+
     if manual_input:
         ## user manual input
-        r_gr_next = 0.05
-        r_gr_high = 0.05
+        r_gr_next = 0.02
+        r_gr_high = 0.02
         length_high_growth = 10
         length_high_growth_stable = 5
         margin_next_year = 0.0266
         margin_target = 0.0266
         converge_year = 10
         r_riskfree = 0.0137
-        sales_to_capital_flag = "industry_us"
-        invested_capital = 26037000  # to do
+        sales_to_capital_flag = "company"
+        # invested_capital = 26037000  # to do
+
         industry_us = 4.26 # to do
         industry_global = 3.03 # to do
     else:
