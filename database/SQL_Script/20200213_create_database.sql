@@ -269,12 +269,12 @@ CREATE TABLE IF NOT EXISTS `securities_database`.`historical_price` (
   `createdDate` DATE NOT NULL,
   `lastUpdatedDate` DATE NOT NULL,
   `ticker` VARCHAR(45) NOT NULL,
-  `open` BIGINT NULL,
-  `high` BIGINT NULL,
-  `low` BIGINT NULL,
-  `close` BIGINT NULL,
-  `adjclose` BIGINT NULL,
-  `volume` BIGINT NULL,
+  `open` FLOAT NULL,
+  `high` FLOAT NULL,
+  `low` FLOAT NULL,
+  `close` FLOAT NULL,
+  `adjclose` FLOAT NULL,
+  `volume` FLOAT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 

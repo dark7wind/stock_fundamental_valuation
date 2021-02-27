@@ -34,6 +34,7 @@ def insert_historical_price_data_into_db():
     values = ("%s, " * len(df.columns))[:-2]
     req = """INSERT INTO %s (%s) VALUES (%s)""" % (table_name, columns, values)
 
+
     # insert MySQL
     mysql_cursor = db.cursor()
     chunk_size = 1000
