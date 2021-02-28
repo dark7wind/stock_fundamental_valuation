@@ -5,7 +5,8 @@ import yaml
 from src.data.download_historical_price import download_historical_price
 from definitions import DATABASE_CONFIG_DIR
 
-def insert_historical_price_data_into_db():
+
+def insert_updated_test_data_into_db():
     # load the database configuration
     with open(DATABASE_CONFIG_DIR) as f:
         db_config = yaml.load(f, Loader=yaml.FullLoader)
@@ -14,26 +15,14 @@ def insert_historical_price_data_into_db():
                      db=db_config['db_name'], use_unicode=True, charset="utf8")
 
     # load historical price dataframe
-    df = download_historical_price()
-
-    # create the time now (utc time)
-    now = datetime.datetime.utcnow()
-
-    # to datetime
-    # df['endDate'] = pd.to_datetime( df['endDate'])
-    # createDate and lastUpdatedDate
-    df['createdDate'] = now
-    df['lastUpdatedDate'] = now
-
-    # covert nan to empty
-    df = df.fillna(0)
+    data = {'stockId': [2, 5], 'ticker':['TSN', 'TSN'], 'open':[23,45]}
+    df = pd.DataFrame(data=data)
 
     # create req strings
-    table_name = 'historical_price'
+    table_name = 'test'
     columns = ','.join(df.columns.values)
     values = ("%s, " * len(df.columns))[:-2]
-    req = """INSERT INTO %s (%s) VALUES (%s)""" % (table_name, columns, values)
-
+    req = """INSERT IGNORE INTO %s (%s) VALUES (%s)""" % (table_name, columns, values)
 
     # insert MySQL
     mysql_cursor = db.cursor()
@@ -45,7 +34,10 @@ def insert_historical_price_data_into_db():
         db.commit()
 
     mysql_cursor.close()
+    1
+
+
 
 
 if __name__ == '__main__':
-    insert_historical_price_data_into_db()
+    insert_updated_test_data_into_db()
