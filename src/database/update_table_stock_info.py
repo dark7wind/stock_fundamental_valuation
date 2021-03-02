@@ -15,7 +15,7 @@ db = mdb.connect(host=db_config['db_host'], user=db_config['db_user'], passwd=db
                  db=db_config['db_name'], use_unicode=True, charset="utf8")
 
 df = pd.DataFrame()
-def insert_stock_info_data_into_db(load_local=False):
+def insert_updated_stock_info_data_into_db(load_local=False):
     # create the time now (utc time)
     now = datetime.datetime.utcnow()
 
@@ -32,7 +32,7 @@ def insert_stock_info_data_into_db(load_local=False):
     table_name = 'stock_info'
     columns = ','.join(df.columns.values)
     values = ("%s, " * len(df.columns))[:-2]
-    req = """INSERT INTO %s (%s) VALUES (%s)""" % (table_name, columns, values)
+    req = """INSERT IGNORE INTO %s (%s) VALUES (%s)""" % (table_name, columns, values)
 
     # insert MySQL
     mysql_cursor = db.cursor()
@@ -48,4 +48,4 @@ def insert_stock_info_data_into_db(load_local=False):
 
 
 if __name__ == '__main__':
-    insert_stock_info_data_into_db()
+    insert_updated_stock_info_data_into_db()
