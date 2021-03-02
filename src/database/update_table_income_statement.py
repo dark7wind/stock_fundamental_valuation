@@ -2,10 +2,13 @@ import MySQLdb as mdb
 import pandas as pd
 import datetime
 import yaml
-from src.data.download_historical_price import download_historical_price
+from src.data.download_income_statement import download_income_statement
 from definitions import DATABASE_CONFIG_DIR
 
-def insert_historical_price_data_into_db():
+
+
+
+def insert_updated_income_statement_data_into_db():
     # load the database configuration
     with open(DATABASE_CONFIG_DIR) as f:
         db_config = yaml.load(f, Loader=yaml.FullLoader)
@@ -13,14 +16,14 @@ def insert_historical_price_data_into_db():
     db = mdb.connect(host=db_config['db_host'], user=db_config['db_user'], passwd=db_config['db_pass'],
                      db=db_config['db_name'], use_unicode=True, charset="utf8")
 
-    # load historical price dataframe
-    df = download_historical_price()
+    # load income statement dataframe
+    df = download_income_statement()
 
     # create the time now (utc time)
     now = datetime.datetime.utcnow()
 
     # to datetime
-    # df['endDate'] = pd.to_datetime( df['endDate'])
+    #df['endDate'] = pd.to_datetime( df['endDate'])
     # createDate and lastUpdatedDate
     df['createdDate'] = now
     df['lastUpdatedDate'] = now
@@ -29,11 +32,10 @@ def insert_historical_price_data_into_db():
     df = df.fillna(0)
 
     # create req strings
-    table_name = 'historical_price'
+    table_name = 'income_statement'
     columns = ','.join(df.columns.values)
     values = ("%s, " * len(df.columns))[:-2]
-    req = """INSERT INTO %s (%s) VALUES (%s)""" % (table_name, columns, values)
-
+    req = """INSERT IGNORE INTO %s (%s) VALUES (%s)""" % (table_name, columns, values)
 
     # insert MySQL
     mysql_cursor = db.cursor()
@@ -47,5 +49,6 @@ def insert_historical_price_data_into_db():
     mysql_cursor.close()
 
 
+
 if __name__ == '__main__':
-    insert_historical_price_data_into_db()
+    insert_updated_income_statement_data_into_db()

@@ -44,7 +44,7 @@ def download_stock_statistics():
 
 
 if __name__ == '__main__':
-    download_statistics()
+    download_stock_statistics()
 
 #
 # TICKERS_DIR = os.path.join(ROOT_DIR, 'data/tickers/')

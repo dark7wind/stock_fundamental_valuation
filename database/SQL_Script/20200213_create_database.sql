@@ -111,7 +111,7 @@ DROP TABLE IF EXISTS `securities_database`.`cash_flow` ;
 CREATE TABLE IF NOT EXISTS `securities_database`.`cash_flow` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `stockId` INT UNSIGNED NOT NULL,
-  `endDate` VARCHAR(45) NOT NULL,
+  `endDate` DATE NOT NULL,
   `createdDate` DATE NOT NULL,
   `lastUpdatedDate` DATE NOT NULL,
   `type` VARCHAR(45) NOT NULL,
@@ -277,6 +277,17 @@ CREATE TABLE IF NOT EXISTS `securities_database`.`historical_price` (
   `volume` FLOAT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
+
+
+CREATE TABLE IF NOT EXISTS `securities_database`.`test` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `stockId` INT UNSIGNED NOT NULL,
+  `ticker` VARCHAR(45) NOT NULL,
+  `open` FLOAT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
