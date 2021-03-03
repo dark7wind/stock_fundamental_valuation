@@ -99,3 +99,34 @@ def get_stock_statistics_single_stock(stock_id, ticker):
     except Exception:
         print('no data')
         return None
+
+def get_analysis_info_revenue_single_stock(stock_id, ticker):
+    try:
+        analysts_info = get_analysts_info(ticker)
+        print('get the analysis info revenue data')
+        # revenue estimate
+        df_revenue_estimate = analysts_info['Revenue Estimate']
+        df_revenue_estimate = df_revenue_estimate.T
+        df_revenue_estimate.columns = df_revenue_estimate.iloc[0]
+        df_revenue_estimate = df_revenue_estimate[1:]
+        df_revenue_estimate = df_revenue_estimate.reset_index()
+        ## clean the column name
+        df_revenue_estimate.columns = df_revenue_estimate.columns.str.replace(' ', '')  # remove the space
+        df_revenue_estimate.columns = df_revenue_estimate.columns.str.replace('.', '')  # remove the .
+        df_revenue_estimate = df_revenue_estimate.rename(columns={'SalesGrowth(year/est)': 'SalesGrowth'})
+        ## only select the yearly estimation
+        df_revenue_estimate = df_revenue_estimate[df_revenue_estimate['index'].str.contains('year', case=False)]
+        ## determine if it is the current year's estimation
+        df_revenue_estimate['CurrentYearFlag'] = df_revenue_estimate.apply(lambda x: 'Current' in x['index'], axis=1)
+        ## select the current year
+        current_year = df_revenue_estimate[df_revenue_estimate['index'].str.contains('current year', case=False)] \
+                           ['index'].values[0][-5:-1]
+        df_revenue_estimate['Year'] = current_year
+        df_revenue_estimate['Ticker'] = ticker
+        df_revenue_estimate['stockId'] = stock_id
+        ## drop the index column
+        df_revenue_estimate = df_revenue_estimate.drop(['index'], axis=1)
+        return df_revenue_estimate
+    except Exception:
+        print('no data')
+        return None

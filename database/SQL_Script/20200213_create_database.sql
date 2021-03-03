@@ -279,11 +279,25 @@ CREATE TABLE IF NOT EXISTS `securities_database`.`historical_price` (
 ENGINE = InnoDB;
 
 
-CREATE TABLE IF NOT EXISTS `securities_database`.`test` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `stockId` INT UNSIGNED NOT NULL,
-  `ticker` VARCHAR(45) NOT NULL,
-  `open` FLOAT NULL,
+-- -----------------------------------------------------
+-- Table `securities_database`.`analysis_info_revenue`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `securities_database`.`analysis_info_revenue`;
+
+CREATE TABLE IF NOT EXISTS `securities_database`.`analysis_info_revenue` (
+  `Id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `StockId` INT UNSIGNED NOT NULL,
+  `Year` DATE NOT NULL,
+  `CreatedDate` DATE NOT NULL,
+  `LastUpdatedDate` DATE NOT NULL,
+  `Ticker` VARCHAR(45) NOT NULL,
+  `AvgEstimate` VARCHAR(45) NULL,
+  `LowEstimate` VARCHAR(45) NULL,
+  `HighEstimate` VARCHAR(45) NULL,
+  `YearAgoSales` VARCHAR(45) NULL,
+  `SalesGrowth` VARCHAR(45) NULL,
+  `CurrentYearFlag` TINYINT NULL,
+  `NoofAnalysts` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
