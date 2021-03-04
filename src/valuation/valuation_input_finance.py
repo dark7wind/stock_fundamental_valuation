@@ -118,8 +118,13 @@ def get_analysis_estimate_revenue(ticker):
 
     return r_gr_next, r_gr_high
 
+def get_historical_margin(ticker):
+    pass
+
+
 if __name__ == '__main__':
     ticker = 'KR'
     get_input_finance_func(ticker)
     get_input_price_func(ticker)
     get_analysis_estimate_revenue(ticker)
+    get_historical_margin(ticker)
