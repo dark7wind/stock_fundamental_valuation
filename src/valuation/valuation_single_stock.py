@@ -1,4 +1,5 @@
-from src.valuation.valuation_input_finance import get_input_finance_func, get_input_price_func
+from src.valuation.valuation_input_finance import get_input_finance_func, get_input_price_func, \
+    get_analysis_estimate_revenue
 from src.valuation.valuation_fcff import *
 from src.valuation.valuation_input_list import *
 
@@ -83,21 +84,29 @@ def valuation_single_stock(ticker, manual_input=True):
 
     if manual_input:
         ## user manual input
-        r_gr_next = 0.02
-        r_gr_high = 0.02
+        r_gr_next_manual = 0.02
+        r_gr_high_manual = 0.02
         length_high_growth = 10
-        length_high_growth_stable = 5
-        margin_next_year = 0.0266
-        margin_target = 0.0266
+        length_high_growth_stable = 1
+        margin_next_year = 0.0266 # KR -> 0.0266  TSN -> 0.07
+        margin_target = 0.0266 # KR -> 0.0266  TSN -> 0.07
         converge_year = 10
-        r_riskfree = 0.0137
+        r_riskfree = 0.0147
         sales_to_capital_flag = "company"
-        # invested_capital = 26037000  # to do
 
         industry_us = 4.26 # to do
         industry_global = 3.03 # to do
     else:
         pass
+
+    # growth rate
+    growth_input = 'analysis'
+    if growth_input == 'manual':
+        r_gr_next = r_gr_next_manual
+        r_gr_high = r_gr_high_manual
+    elif growth_input == 'analysis':
+        r_gr_next, r_gr_high = get_analysis_estimate_revenue(ticker)
+
 
     ## R&D capitalization
 
@@ -193,5 +202,5 @@ def valuation_single_stock(ticker, manual_input=True):
 
 
 if __name__ == '__main__':
-    ticker = 'KR' #'TSN'
+    ticker = 'KR' #'TSN', 'KR'
     valuation_single_stock(ticker)

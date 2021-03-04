@@ -89,9 +89,37 @@ def get_input_price_func(ticker):
     ## create the dataframe
     df_historical_price = pd.DataFrame(historical_price, columns=columns_list)
     return df_historical_price
-    1
+
+def get_analysis_estimate_revenue(ticker):
+    # load the database configuration
+    with open(DATABASE_CONFIG_DIR) as f:
+        db_config = yaml.load(f, Loader=yaml.FullLoader)
+
+    db = mdb.connect(host=db_config['db_host'], user=db_config['db_user'], passwd=db_config['db_pass'],
+                     db=db_config['db_name'], use_unicode=True, charset="utf8")
+
+    # analysis revenue estimation
+    table_name = 'analysis_info_revenue'
+    columns_list = ['LastUpdatedDate', 'Ticker', 'Year', 'SalesGrowth', 'CurrentYearFlag']
+    columns = ','.join(columns_list)
+    columns_1 = columns_list[0]
+    req = """SELECT %s FROM %s WHERE ticker='%s' and %s = (SELECT MAX(%s) FROM %s)""" % (columns, table_name, ticker,
+                                                                                         columns_1, columns_1, table_name)
+    reveune_growth_cursor = db.cursor()
+    reveune_growth_cursor.execute(req)
+    revenue_growth = reveune_growth_cursor.fetchall()
+    reveune_growth_cursor.close
+
+    r_gr_next = revenue_growth[0][-2]
+    r_gr_next = float(r_gr_next.strip('%')) / 100
+
+    r_gr_high = revenue_growth[1][-2]
+    r_gr_high = float(r_gr_high.strip('%')) / 100
+
+    return r_gr_next, r_gr_high
 
 if __name__ == '__main__':
-    ticker = 'TSN'
+    ticker = 'KR'
     get_input_finance_func(ticker)
     get_input_price_func(ticker)
+    get_analysis_estimate_revenue(ticker)
