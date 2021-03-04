@@ -6,7 +6,7 @@ import yaml
 from src.data.download_analysis_info import download_analysis_info
 from definitions import DATABASE_CONFIG_DIR
 
-def insert_analysis_info_revenue_data_into_db():
+def insert_updated_analysis_info_revenue_data_into_db():
     # load the database configuration
     with open(DATABASE_CONFIG_DIR) as f:
         db_config = yaml.load(f, Loader=yaml.FullLoader)
@@ -33,7 +33,7 @@ def insert_analysis_info_revenue_data_into_db():
     table_name = 'analysis_info_revenue'
     columns = ','.join(df.columns.values)
     values = ("%s, " * len(df.columns))[:-2]
-    req = """INSERT INTO %s (%s) VALUES (%s)""" % (table_name, columns, values)
+    req = """INSERT IGNORE INTO %s (%s) VALUES (%s)""" % (table_name, columns, values)
 
     # insert MySQL
     mysql_cursor = db.cursor()
@@ -47,6 +47,5 @@ def insert_analysis_info_revenue_data_into_db():
     mysql_cursor.close()
 
 
-
 if __name__ == '__main__':
-    insert_analysis_info_revenue_data_into_db()
+    insert_updated_analysis_info_revenue_data_into_db()

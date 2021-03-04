@@ -287,7 +287,7 @@ DROP TABLE IF EXISTS `securities_database`.`analysis_info_revenue`;
 CREATE TABLE IF NOT EXISTS `securities_database`.`analysis_info_revenue` (
   `Id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `StockId` INT UNSIGNED NOT NULL,
-  `Year` DATE NOT NULL,
+  `Year` YEAR(4) NOT NULL,
   `CreatedDate` DATE NOT NULL,
   `LastUpdatedDate` DATE NOT NULL,
   `Ticker` VARCHAR(45) NOT NULL,
