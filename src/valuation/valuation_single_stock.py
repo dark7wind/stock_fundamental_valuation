@@ -3,7 +3,7 @@ from src.valuation.valuation_input_finance import get_input_finance_func, get_in
 from src.valuation.valuation_fcff import *
 from src.valuation.valuation_input_list import *
 
-LOAD_TTM = False
+LOAD_TTM = True
 
 def valuation_single_stock(ticker, manual_input=True):
     if not LOAD_TTM:
@@ -216,5 +216,5 @@ def valuation_single_stock(ticker, manual_input=True):
 
 
 if __name__ == '__main__':
-    ticker = 'TSN' #'TSN', 'KR'
+    ticker = 'KR' #'TSN', 'KR'
     valuation_single_stock(ticker)
