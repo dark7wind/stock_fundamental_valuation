@@ -118,8 +118,58 @@ def get_analysis_estimate_revenue(ticker):
 
     return r_gr_next, r_gr_high
 
+def get_historical_margin(ticker):
+    # load the database configuration
+    with open(DATABASE_CONFIG_DIR) as f:
+        db_config = yaml.load(f, Loader=yaml.FullLoader)
+
+    db = mdb.connect(host=db_config['db_host'], user=db_config['db_user'], passwd=db_config['db_pass'],
+                     db=db_config['db_name'], use_unicode=True, charset="utf8")
+
+    # calculate average historical margin from income_statement
+    table_name = 'income_statement'
+    columns_list = ['ticker', 'endDate', 'type', 'totalRevenue', 'operatingIncome']
+    columns = ','.join(columns_list)
+    req = """SELECT %s FROM %s WHERE ticker='%s' and type='yearly' """ % (columns, table_name, ticker)
+
+    historical_margin_cursor = db.cursor()
+    historical_margin_cursor.execute(req)
+    historical_margin = historical_margin_cursor.fetchall()
+    historical_margin_cursor.close
+
+    ## create the dataframe
+    df_historical_margin = pd.DataFrame(historical_margin, columns=columns_list)
+    df_historical_margin['margin'] = df_historical_margin['operatingIncome'] / df_historical_margin['totalRevenue']
+    historical_margin_mean = df_historical_margin['margin'].mean()
+
+    # calculate recent historical margin from income_statement_TTM
+    table_name = 'income_statement_TTM'
+    columns_list = ['Ticker', 'Date', 'LastUpdatedDate', 'TotalRevenue', 'OperatingIncome', 'type']
+    LastUpdatedDate_col = columns_list[2]
+    columns = ','.join(columns_list)
+    req = """SELECT %s FROM %s WHERE ticker='%s' AND type='yearly' AND %s = (SELECT MAX(%s) FROM %s) """ % (columns,
+                                                                                                            table_name,
+                                                                                                            ticker,
+                                                                                                            LastUpdatedDate_col,
+                                                                                                            LastUpdatedDate_col,
+                                                                                                            table_name)
+
+    historical_margin_recent_cursor = db.cursor()
+    historical_margin_recent_cursor.execute(req)
+    historical_margin_recent = historical_margin_recent_cursor.fetchall()
+    historical_margin_recent_cursor.close
+
+    ## create the dataframe
+    df_historical_margin_recent = pd.DataFrame(historical_margin_recent, columns=columns_list)
+    recent_margin = df_historical_margin_recent['OperatingIncome'] / df_historical_margin_recent['TotalRevenue']
+    recent_margin = recent_margin.iloc[0]
+    return historical_margin_mean, recent_margin
+
+
+
 if __name__ == '__main__':
     ticker = 'KR'
-    get_input_finance_func(ticker)
-    get_input_price_func(ticker)
-    get_analysis_estimate_revenue(ticker)
+    # get_input_finance_func(ticker)
+    # get_input_price_func(ticker)
+    # get_analysis_estimate_revenue(ticker)
+    get_historical_margin(ticker)
