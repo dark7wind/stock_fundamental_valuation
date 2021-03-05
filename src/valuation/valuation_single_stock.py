@@ -1,5 +1,5 @@
 from src.valuation.valuation_input_finance import get_input_finance_func, get_input_price_func, \
-    get_analysis_estimate_revenue
+    get_analysis_estimate_revenue, get_historical_margin
 from src.valuation.valuation_fcff import *
 from src.valuation.valuation_input_list import *
 
@@ -88,8 +88,8 @@ def valuation_single_stock(ticker, manual_input=True):
         r_gr_high_manual = 0.02
         length_high_growth = 10
         length_high_growth_stable = 1
-        margin_next_year = 0.0266 # KR -> 0.0266  TSN -> 0.07
-        margin_target = 0.0266 # KR -> 0.0266  TSN -> 0.07
+        margin_next_year_manual = 0.07 # KR -> 0.0266  TSN -> 0.07
+        margin_target_manual = 0.07 # KR -> 0.0266  TSN -> 0.07
         converge_year = 10
         r_riskfree = 0.0147
         sales_to_capital_flag = "company"
@@ -107,6 +107,20 @@ def valuation_single_stock(ticker, manual_input=True):
     elif growth_input == 'analysis':
         r_gr_next, r_gr_high = get_analysis_estimate_revenue(ticker)
 
+    # margin
+    margin_input = 'historical_mean'
+    if margin_input == 'manual':
+        margin_next_year = margin_next_year_manual
+        margin_target = margin_target_manual
+    elif margin_input == 'historical_mean':
+        margin_historical_mean, margin_historical_recent = get_historical_margin(ticker)
+        margin_next_year = margin_historical_mean
+        margin_target = margin_historical_mean
+    elif margin_input == 'historical_recent':
+        margin_historical_mean, margin_historical_recent = get_historical_margin(ticker)
+        margin_next_year = margin_historical_recent
+        margin_target = margin_historical_recent
+    print(f'margin next year: {margin_next_year}, margin target: {margin_target}')
 
     ## R&D capitalization
 
@@ -202,5 +216,5 @@ def valuation_single_stock(ticker, manual_input=True):
 
 
 if __name__ == '__main__':
-    ticker = 'KR' #'TSN', 'KR'
+    ticker = 'TSN' #'TSN', 'KR'
     valuation_single_stock(ticker)
