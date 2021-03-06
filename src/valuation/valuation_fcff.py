@@ -155,8 +155,13 @@ def estimated_value_share_func(equity_value, num_share, price_current):
     :param price_current:
     :return:
     """
-    estimated_value = equity_value / num_share
-    price_to_value = price_current / estimated_value
+    try:
+        estimated_value = equity_value / num_share
+        price_to_value = price_current / estimated_value
+    except TypeError:
+        estimated_value = np.nan
+        price_to_value = np.nan
+
     return estimated_value, price_to_value
 
 def revenue_list_func(revenue_current, growth_list, length_high_growth):
