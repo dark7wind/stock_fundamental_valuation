@@ -10,4 +10,5 @@ HISTORICAL_PRICE_DIR = os.path.join(ROOT_DIR, 'data/historical_price/')
 ANALYSIS_INFO_DIR = os.path.join(ROOT_DIR, 'data/fundamental/analysis_info/')
 
 DATABASE_CONFIG_DIR = os.path.join(ROOT_DIR, 'database/database_config/database.ymal')
+INPUT_DIR = os.path.join(ROOT_DIR, 'input/input.ymal')
 RESULT_DIR = os.path.join(ROOT_DIR, 'result/')

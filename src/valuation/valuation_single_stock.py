@@ -1,65 +1,84 @@
+import yaml
+from definitions import INPUT_DIR
 from src.valuation.valuation_input_finance import get_input_finance_func, get_input_price_func, \
     get_analysis_estimate_revenue, get_historical_margin
 from src.valuation.valuation_fcff import *
 from src.valuation.valuation_input_list import *
 
+
 LOAD_TTM = True
 
 def valuation_single_stock(ticker, manual_input=True):
-    if not LOAD_TTM:
-        df_income_statement, df_balance_sheet, df_stock_statics = get_input_finance_func(ticker, read_from_sql=True,
-                                                                                         read_TTM=False)
-        df_income_statement_yearly = df_income_statement.loc[(df_income_statement['type'] == 'yearly')]
-        df_balance_sheet_yearly = df_balance_sheet.loc[(df_balance_sheet['type'] == 'yearly')]
+    # load manual input
+    with open(INPUT_DIR) as f:
+        input_manual = yaml.load(f, Loader=yaml.FullLoader)
 
-        ## to do -> use yearly or quarterly -> now use yearly
-        df_income_statement_current = df_income_statement_yearly.loc[df_income_statement_yearly['endDate'] == \
-                                                                     df_income_statement_yearly['endDate'].max()]
-        df_balance_sheet_current = df_balance_sheet_yearly.loc[df_balance_sheet_yearly['endDate'] == \
-                                                               df_balance_sheet_yearly['endDate'].max()]
-        # total revenue, income before tax, income tax expense
-        total_revenue = df_income_statement_current['totalRevenue'].iloc[0]
-        income_before_tax = df_income_statement_current['incomeBeforeTax'].iloc[0]
-        income_tax_expense = df_income_statement_current['incomeTaxExpense'].iloc[0]
-
-    else:
-        df_income_statement, df_balance_sheet, df_stock_statics = get_input_finance_func(ticker, read_from_sql=True,
-                                                                                         read_TTM=True)
-        df_income_statement_current = df_income_statement.loc[df_income_statement['LastUpdatedDate'] == \
-                                                                      df_income_statement['LastUpdatedDate'].max()]
-        df_balance_sheet_current = df_balance_sheet.loc[df_balance_sheet['endDate'] == \
-                                                               df_balance_sheet['endDate'].max()]
-
-        # total revenue, income before tax, income tax expense
-        total_revenue = df_income_statement_current['TotalRevenue'].iloc[0] * 1000
-        income_before_tax = df_income_statement_current['PretaxIncome'].iloc[0] * 1000
-        income_tax_expense = df_income_statement_current['TaxProvision'].iloc[0] * 1000
-
-    print(f'ticker: {ticker}')
-    print(f'current year revenue: {total_revenue}')
-    print(f'current year income before tax: {income_before_tax}')
-    print(f'current year tax expense: {income_tax_expense}')
+    # load manual default assumption
+        ## default assumption
+        flag_gr_terminal_direct = input_manual['flag_gr_terminal_direct']
+        r_gr_terminal_direct = input_manual['r_gr_terminal_direct']
+        flag_terminal_tax = input_manual['flag_terminal_tax']
+        nol_initial_flag = input_manual['nol_initial_flag']
+        net_income_loss_previous = input_manual['net_income_loss_previous']
+        tax_terminal = input_manual['tax_terminal']
+        terminal_roic = input_manual['terminal_roic']
+        terminal_cost_capital = input_manual['terminal_cost_capital']
+        prob_failure = input_manual['prob_failure']
+        proceeds_failure = input_manual['proceeds_failure']
 
     try:
+        ## load income statement and balance sheet
+        if not LOAD_TTM:
+            df_income_statement, df_balance_sheet, df_stock_statics = get_input_finance_func(ticker, read_from_sql=True,
+                                                                                             read_TTM=False)
+            df_income_statement_yearly = df_income_statement.loc[(df_income_statement['type'] == 'yearly')]
+            df_balance_sheet_yearly = df_balance_sheet.loc[(df_balance_sheet['type'] == 'yearly')]
+
+            ## to do -> use yearly or quarterly -> now use yearly
+            df_income_statement_current = df_income_statement_yearly.loc[df_income_statement_yearly['endDate'] == \
+                                                                         df_income_statement_yearly['endDate'].max()]
+            df_balance_sheet_current = df_balance_sheet_yearly.loc[df_balance_sheet_yearly['endDate'] == \
+                                                                   df_balance_sheet_yearly['endDate'].max()]
+            # total revenue, income before tax, income tax expense
+            total_revenue = df_income_statement_current['totalRevenue'].iloc[0]
+            income_before_tax = df_income_statement_current['incomeBeforeTax'].iloc[0]
+            income_tax_expense = df_income_statement_current['incomeTaxExpense'].iloc[0]
+
+        else:
+            df_income_statement, df_balance_sheet, df_stock_statics = get_input_finance_func(ticker, read_from_sql=True,
+                                                                                             read_TTM=True)
+            df_income_statement_current = df_income_statement.loc[df_income_statement['LastUpdatedDate'] == \
+                                                                          df_income_statement['LastUpdatedDate'].max()]
+            df_balance_sheet_current = df_balance_sheet.loc[df_balance_sheet['endDate'] == \
+                                                                   df_balance_sheet['endDate'].max()]
+
+            # total revenue, income before tax, income tax expense
+            total_revenue = df_income_statement_current['TotalRevenue'].iloc[0] * 1000
+            income_before_tax = df_income_statement_current['PretaxIncome'].iloc[0] * 1000
+            income_tax_expense = df_income_statement_current['TaxProvision'].iloc[0] * 1000
+
+        print(f'ticker: {ticker}')
+        print(f'current year revenue: {total_revenue}')
+        print(f'current year income before tax: {income_before_tax}')
+        print(f'current year tax expense: {income_tax_expense}')
+
         short_term_debt = df_balance_sheet_current['shortLongTermDebt'].iloc[0]
         long_term_debt = df_balance_sheet_current['longTermDebt'].iloc[0]
         debt_bv = short_term_debt + long_term_debt
-        print(f'book value of debt: {debt_bv}')
         equity_bv = df_balance_sheet_current['totalStockholderEquity'].iloc[0]
-        print(f'book value of equity: {equity_bv}')
-
         cash = df_balance_sheet_current['cash'].iloc[0]
-        print(f'cash and marketable securities: {cash}')
         minority_interests = df_balance_sheet_current['minorityInterest'].iloc[0]
-        #minority_interests = 0
-        print(f'minority interest: {minority_interests}')
-
         non_operating_assets = 0 # default (to do)
-        print(f'non operating assets: {non_operating_assets}')
         options = 0 # default (to do)
+        print(f'book value of debt: {debt_bv}')
+        print(f'book value of equity: {equity_bv}')
+        print(f'cash and marketable securities: {cash}')
+        print(f'minority interest: {minority_interests}')
+        print(f'non operating assets: {non_operating_assets}')
         print(f'options: {options}')
 
-        # outstanding shares
+
+        ## outstanding shares
         df_stock_statics_current = df_stock_statics.loc[df_stock_statics['lastUpdatedDate'] == \
                                                                      df_stock_statics['lastUpdatedDate'].max()]
         num_share = df_stock_statics_current['sharesOutstanding'].iloc[0]
@@ -69,50 +88,38 @@ def valuation_single_stock(ticker, manual_input=True):
             num_share = float(num_share[: -1]) * 10**6
         print(f'number of shares outstanding: {num_share}')
 
-        # get the price from database
+        ## current price
         price_current = get_input_price_func(ticker)['close'].iloc[0]
         print(f'current price: {price_current}')
 
-
+        ## tax
         marginal_tax_rate = 0.25
         effective_tax_rate = effective_tax_rate_func(income_before_tax, income_tax_expense, marginal_tax_rate, \
                                                            estimate_effective_tax_rate=0.25, flag_avg=False)
         print(f'marginal tax rate: {marginal_tax_rate}')
         print(f'effective tax rate: {effective_tax_rate}')
 
+        ## invested capital
         invested_capital = invested_capital_func(equity_bv, debt_bv, cash)
         print(f'invested capital: {invested_capital}')
 
-        if manual_input:
-            ## user manual input
-            r_gr_next_manual = 0.02
-            r_gr_high_manual = 0.02
-            length_high_growth = 10
-            length_high_growth_stable = 1
-            margin_next_year_manual = 0.07 # KR -> 0.0266  TSN -> 0.07
-            margin_target_manual = 0.07 # KR -> 0.0266  TSN -> 0.07
-            converge_year = 10
-            r_riskfree = 0.0147
-            sales_to_capital_flag = "company"
-
-            industry_us = 4.26 # to do
-            industry_global = 3.03 # to do
-        else:
-            pass
-
-        # growth rate
+        ## growth
         growth_input = 'analysis'
         if growth_input == 'manual':
-            r_gr_next = r_gr_next_manual
-            r_gr_high = r_gr_high_manual
+            r_gr_next = input_manual['r_gr_next']
+            r_gr_high = input_manual['r_gr_high']
         elif growth_input == 'analysis':
             r_gr_next, r_gr_high = get_analysis_estimate_revenue(ticker)
 
-        # margin
+        length_high_growth = input_manual['length_high_growth']
+        length_high_growth_stable = input_manual['length_high_growth_stable']
+
+
+        ## margin
         margin_input = 'historical_mean'
         if margin_input == 'manual':
-            margin_next_year = margin_next_year_manual
-            margin_target = margin_target_manual
+            margin_next_year = input_manual['margin_next_year']
+            margin_target = input_manual['margin_target']
         elif margin_input == 'historical_mean':
             margin_historical_mean, margin_historical_recent = get_historical_margin(ticker)
             margin_next_year = margin_historical_mean
@@ -121,27 +128,18 @@ def valuation_single_stock(ticker, manual_input=True):
             margin_historical_mean, margin_historical_recent = get_historical_margin(ticker)
             margin_next_year = margin_historical_recent
             margin_target = margin_historical_recent
-        print(f'margin next year: {margin_next_year}, margin target: {margin_target}')
 
-        ## R&D capitalization
+        converge_year = input_manual['converge_year']
+        print(f'margin next year: {margin_next_year}, margin target: {margin_target}, converge year: {converge_year}')
 
-        ## Lease capitalization
-        lease_flag = False #True
-        lease_to_debt = 520971240  # to do
+        ## R&D capitalization (to do)
 
-        ## default assumption
-        flag_gr_terminal_direct = False
-        r_gr_terminal_direct = 0.02
+        ## Lease capitalization (to do)
+        flag_lease = input_manual['flag_lease']
+        lease_to_debt = 0  # to do
 
-        flag_terminal_tax = True
-
-        nol_initial_flag = False
-        net_income_loss_previous = 0
-        tax_terminal = 0.25
-        terminal_roic = 0.0605
-        terminal_cost_capital = 0.0605
-        prob_failure = 0
-        proceeds_failure = 0
+        ## risk free rate
+        r_riskfree = input_manual['r_riskfree']
 
         ## growth list
         growth_list = growth_list_direct_func(r_gr_next, r_gr_high, length_high_growth, length_high_growth_stable, \
@@ -153,9 +151,12 @@ def valuation_single_stock(ticker, manual_input=True):
         print(f'margin list: {margin_list}')
 
         ## sales to capital list
-        sales_to_capital_list = sales_to_capital_list_func(total_revenue, invested_capital, industry_us, industry_global, \
-                                                           length_high_growth, sales_to_capital_flag)
-        print(f'sales to capital list: {sales_to_capital_list}')
+        flag_sales_to_capital = input_manual['flag_sales_to_capital']
+        sales_to_capital_us = 0 ## to do
+        sales_to_capital_global = 0 ## to do
+        sales_to_capital_list = sales_to_capital_list_func(total_revenue, invested_capital, sales_to_capital_us,
+                                                           sales_to_capital_global, length_high_growth, flag_sales_to_capital)
+        print(f'sales to capita list: {sales_to_capital_list}')
 
         ## tax rate list
         tax_rate_list = tax_rate_list_func(effective_tax_rate, marginal_tax_rate, length_high_growth,
@@ -179,13 +180,13 @@ def valuation_single_stock(ticker, manual_input=True):
         cost_capital_list = [0.065, 0.065, 0.065, 0.065, 0.065, 0.0641, 0.0632, 0.0623, 0.0614, 0.0605]
         print(f'cost of capital list: {cost_capital_list}')
 
-        ## present value --> growth period
+        ## present value -> growth period
         pv_growth, present_value_list = present_value_growth_period_func(revenue_list, ebit_list, growth_list, \
                                                                          margin_list, tax_rate_list, nol_list, \
                                                                          sales_to_capital_list, cost_capital_list)
         print(f'present value in growth period: {pv_growth}')
 
-        ## present_value --> terminal period
+        ## present_value -> terminal period
         pv_terminal = present_value_terminal_func(revenue_list, growth_list[-1], margin_list, tax_terminal, \
                                                   terminal_roic, terminal_cost_capital, cost_capital_list)
         print(f'present value in growth period: {pv_terminal}')
@@ -199,7 +200,7 @@ def valuation_single_stock(ticker, manual_input=True):
         print(f'value of operating assets: {operating_assets_value}')
 
         ## debt
-        debt_value = debt_func(debt_bv, lease_flag, lease_to_debt)
+        debt_value = debt_func(debt_bv, flag_lease, lease_to_debt)
         print(f'value of debt: {debt_value}')
 
         ## common stock equity value
@@ -213,6 +214,7 @@ def valuation_single_stock(ticker, manual_input=True):
         print(f'price / estimated value: {price_to_value}')
 
     except:
+        print('exists error')
         estimated_value = np.nan
         price_current = np.nan
         price_to_value = np.nan
@@ -222,5 +224,5 @@ def valuation_single_stock(ticker, manual_input=True):
 
 
 if __name__ == '__main__':
-    ticker = 'ODFL' #'TSN', 'KR' 'ODFL'
+    ticker = 'KR' #'TSN', 'KR' 'ODFL'
     valuation_single_stock(ticker)
