@@ -155,7 +155,8 @@ def valuation_single_stock(ticker, manual_input=True):
         sales_to_capital_us = 0 ## to do
         sales_to_capital_global = 0 ## to do
         sales_to_capital_list = sales_to_capital_list_func(total_revenue, invested_capital, sales_to_capital_us,
-                                                           sales_to_capital_global, length_high_growth, flag_sales_to_capital)
+                                                           sales_to_capital_global, length_high_growth,
+                                                           flag_sales_to_capital)
         print(f'sales to capita list: {sales_to_capital_list}')
 
         ## tax rate list
