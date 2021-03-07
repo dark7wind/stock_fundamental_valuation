@@ -1,7 +1,7 @@
 import yahoofinancials as yf
 import pickle
 from src.valuation.valuation_fcff import *
-from src.valuation.valuation_input_list import *
+from src.valuation.back_up.valuation_input_list import *
 
 #%%
 ticker = 'TSN'

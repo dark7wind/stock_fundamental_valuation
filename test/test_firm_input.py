@@ -1,6 +1,6 @@
 import unittest
 
-from src.valuation.valuation_input_list import growth_list_direct_func, margin_list_direct_func, sales_to_capital_list_func, \
+from src.valuation.back_up.valuation_input_list import growth_list_direct_func, margin_list_direct_func, sales_to_capital_list_func, \
                            tax_rate_list_func
 
 class TestFirmInput(unittest.TestCase):

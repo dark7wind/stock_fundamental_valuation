@@ -2,15 +2,32 @@
 r_gr_next: 0.02
 r_gr_high: 0.02
 length_high_growth: 10
-length_high_growth_stable: 1
+length_high_growth_stable: 5
 margin_next_year: 0.07 # KR -> 0.0266  TSN -> 0.07
 margin_target: 0.07 # KR -> 0.0266  TSN -> 0.07
 converge_year: 10
-r_riskfree: 0.0147
+r_riskfree: 0.0111
 flag_sales_to_capital: "company"
 flag_lease: False
 
+## cost of capital
+cost_capital_manual: True
+cost_capital: 0.065 #0.07 #0.065
+
+mature_ERP: 0.0494
+
 ## default assumption
+## assumption 1: In stable growth, I will assume that your firm will have a cost of capital similar to that of typical
+## mature companies (riskfree rate + country ERP (equity risk premium)
+flag_cost_capital_terminal_override: False
+cost_capital_terminal_override: 0.0605
+
+## assumption: I will assume that today's risk free rate will prevail in perpetuity. If you override this assumption,
+## I will change the riskfree rate after year 10.
+flag_risk_free_terminal_override: False
+risk_free_terminal_override: 0.02
+
+##
 flag_gr_terminal_direct: False
 r_gr_terminal_direct: 0.02
 flag_terminal_tax: True
@@ -18,6 +35,5 @@ nol_initial_flag: False
 net_income_loss_previous: 0
 tax_terminal: 0.25
 terminal_roic: 0.0605
-terminal_cost_capital: 0.0605
 prob_failure: 0
 proceeds_failure: 0
