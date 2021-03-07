@@ -3,7 +3,7 @@ from definitions import INPUT_DIR
 from src.valuation.valuation_input_finance import get_input_finance_func, get_input_price_func, \
     get_analysis_estimate_revenue, get_historical_margin
 from src.valuation.valuation_fcff import *
-from src.valuation.valuation_input_list import *
+#from src.valuation.valuation_input_list import *
 
 
 LOAD_TTM = True
@@ -14,17 +14,21 @@ def valuation_single_stock(ticker, manual_input=True):
         input_manual = yaml.load(f, Loader=yaml.FullLoader)
 
     # load manual default assumption
-        ## default assumption
-        flag_gr_terminal_direct = input_manual['flag_gr_terminal_direct']
-        r_gr_terminal_direct = input_manual['r_gr_terminal_direct']
-        flag_terminal_tax = input_manual['flag_terminal_tax']
-        nol_initial_flag = input_manual['nol_initial_flag']
-        net_income_loss_previous = input_manual['net_income_loss_previous']
-        tax_terminal = input_manual['tax_terminal']
-        terminal_roic = input_manual['terminal_roic']
-        terminal_cost_capital = input_manual['terminal_cost_capital']
-        prob_failure = input_manual['prob_failure']
-        proceeds_failure = input_manual['proceeds_failure']
+    mature_ERP = input_manual['mature_ERP']
+    ## default assumption
+    flag_cost_capital_terminal_override = input_manual['flag_cost_capital_terminal_override']
+    cost_capital_terminal_override = input_manual['cost_capital_terminal_override']
+    flag_risk_free_terminal_override = input_manual['flag_risk_free_terminal_override']
+    risk_free_terminal_override = input_manual['risk_free_terminal_override']
+    flag_gr_terminal_direct = input_manual['flag_gr_terminal_direct']
+    r_gr_terminal_direct = input_manual['r_gr_terminal_direct']
+    flag_terminal_tax = input_manual['flag_terminal_tax']
+    nol_initial_flag = input_manual['nol_initial_flag']
+    net_income_loss_previous = input_manual['net_income_loss_previous']
+    tax_terminal = input_manual['tax_terminal']
+    terminal_roic = input_manual['terminal_roic']
+    prob_failure = input_manual['prob_failure']
+    proceeds_failure = input_manual['proceeds_failure']
 
     try:
         ## load income statement and balance sheet
@@ -94,8 +98,8 @@ def valuation_single_stock(ticker, manual_input=True):
 
         ## tax
         marginal_tax_rate = 0.25
-        effective_tax_rate = effective_tax_rate_func(income_before_tax, income_tax_expense, marginal_tax_rate, \
-                                                           estimate_effective_tax_rate=0.25, flag_avg=False)
+        effective_tax_rate = effective_tax_rate_func(income_before_tax, income_tax_expense, marginal_tax_rate,
+                                                     estimate_effective_tax_rate=0.25, flag_avg=False)
         print(f'marginal tax rate: {marginal_tax_rate}')
         print(f'effective tax rate: {effective_tax_rate}')
 
@@ -178,7 +182,15 @@ def valuation_single_stock(ticker, manual_input=True):
         print(f'Net operating lost list: {nol_list}')
 
         ## cost of capital list  ## to do
-        cost_capital_list = [0.065, 0.065, 0.065, 0.065, 0.065, 0.0641, 0.0632, 0.0623, 0.0614, 0.0605]
+        #cost_capital_list = [0.065, 0.065, 0.065, 0.065, 0.065, 0.0641, 0.0632, 0.0623, 0.0614, 0.0605]
+        if input_manual['cost_capital_manual'] == True:
+            cost_capital = input_manual['cost_capital']
+        else:
+            pass
+        cost_capital_list = cost_of_capital_list_func(cost_capital, length_high_growth, length_high_growth_stable,
+                                                      r_riskfree, mature_ERP, risk_free_terminal_override,
+                                                      cost_capital_terminal_override, flag_risk_free_terminal_override,
+                                                      flag_cost_capital_terminal_override)
         print(f'cost of capital list: {cost_capital_list}')
 
         ## present value -> growth period
@@ -189,7 +201,7 @@ def valuation_single_stock(ticker, manual_input=True):
 
         ## present_value -> terminal period
         pv_terminal = present_value_terminal_func(revenue_list, growth_list[-1], margin_list, tax_terminal, \
-                                                  terminal_roic, terminal_cost_capital, cost_capital_list)
+                                                  terminal_roic, cost_capital_list)
         print(f'present value in growth period: {pv_terminal}')
 
         ## sum of present value
