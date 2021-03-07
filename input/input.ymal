@@ -6,13 +6,13 @@ length_high_growth_stable: 5
 margin_next_year: 0.07 # KR -> 0.0266  TSN -> 0.07
 margin_target: 0.07 # KR -> 0.0266  TSN -> 0.07
 converge_year: 10
-r_riskfree: 0.0111
+r_riskfree: 0.0156
 flag_sales_to_capital: "company"
 flag_lease: False
 
 ## cost of capital
 cost_capital_manual: True
-cost_capital: 0.065 #0.07 #0.065
+cost_capital: 0.075 #0.07 #0.065
 
 mature_ERP: 0.0494
 
