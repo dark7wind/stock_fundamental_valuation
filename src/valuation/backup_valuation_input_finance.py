@@ -4,14 +4,13 @@ from definitions import DATABASE_CONFIG_DIR
 import pandas as pd
 pd.set_option('display.max_columns', None)
 
-# load the database configuration
-with open(DATABASE_CONFIG_DIR) as f:
-    db_config = yaml.load(f, Loader=yaml.FullLoader)
-
-db = mdb.connect(host=db_config['db_host'], user=db_config['db_user'], passwd=db_config['db_pass'],
-                 db=db_config['db_name'], use_unicode=True, charset="utf8")
-
 def get_input_finance_func(ticker, read_from_sql=True, read_TTM=False):
+    # load the database configuration
+    with open(DATABASE_CONFIG_DIR) as f:
+        db_config = yaml.load(f, Loader=yaml.FullLoader)
+
+    db = mdb.connect(host=db_config['db_host'], user=db_config['db_user'], passwd=db_config['db_pass'],
+                     db=db_config['db_name'], use_unicode=True, charset="utf8")
 
     if read_from_sql and not read_TTM:
         # income_statement
@@ -66,12 +65,12 @@ def get_input_finance_func(ticker, read_from_sql=True, read_TTM=False):
     return df_income_statement, df_balance_sheet, df_stock_statistics
 
 def get_input_price_func(ticker):
-    # # load the database configuration
-    # with open(DATABASE_CONFIG_DIR) as f:
-    #     db_config = yaml.load(f, Loader=yaml.FullLoader)
-    #
-    # db = mdb.connect(host=db_config['db_host'], user=db_config['db_user'], passwd=db_config['db_pass'],
-    #                  db=db_config['db_name'], use_unicode=True, charset="utf8")
+    # load the database configuration
+    with open(DATABASE_CONFIG_DIR) as f:
+        db_config = yaml.load(f, Loader=yaml.FullLoader)
+
+    db = mdb.connect(host=db_config['db_host'], user=db_config['db_user'], passwd=db_config['db_pass'],
+                     db=db_config['db_name'], use_unicode=True, charset="utf8")
 
     # histoical_price
     table_name = 'historical_price'
@@ -92,12 +91,12 @@ def get_input_price_func(ticker):
     return df_historical_price
 
 def get_analysis_estimate_revenue(ticker):
-    # # load the database configuration
-    # with open(DATABASE_CONFIG_DIR) as f:
-    #     db_config = yaml.load(f, Loader=yaml.FullLoader)
-    #
-    # db = mdb.connect(host=db_config['db_host'], user=db_config['db_user'], passwd=db_config['db_pass'],
-    #                  db=db_config['db_name'], use_unicode=True, charset="utf8")
+    # load the database configuration
+    with open(DATABASE_CONFIG_DIR) as f:
+        db_config = yaml.load(f, Loader=yaml.FullLoader)
+
+    db = mdb.connect(host=db_config['db_host'], user=db_config['db_user'], passwd=db_config['db_pass'],
+                     db=db_config['db_name'], use_unicode=True, charset="utf8")
 
     # analysis revenue estimation
     table_name = 'analysis_info_revenue'
@@ -120,12 +119,12 @@ def get_analysis_estimate_revenue(ticker):
     return r_gr_next, r_gr_high
 
 def get_historical_margin(ticker):
-    # # load the database configuration
-    # with open(DATABASE_CONFIG_DIR) as f:
-    #     db_config = yaml.load(f, Loader=yaml.FullLoader)
-    #
-    # db = mdb.connect(host=db_config['db_host'], user=db_config['db_user'], passwd=db_config['db_pass'],
-    #                  db=db_config['db_name'], use_unicode=True, charset="utf8")
+    # load the database configuration
+    with open(DATABASE_CONFIG_DIR) as f:
+        db_config = yaml.load(f, Loader=yaml.FullLoader)
+
+    db = mdb.connect(host=db_config['db_host'], user=db_config['db_user'], passwd=db_config['db_pass'],
+                     db=db_config['db_name'], use_unicode=True, charset="utf8")
 
     # calculate average historical margin from income_statement
     table_name = 'income_statement'
@@ -166,30 +165,14 @@ def get_historical_margin(ticker):
     recent_margin = recent_margin.iloc[0]
     return historical_margin_mean, recent_margin
 
-def get_historical_growth(ticker):
-    table_name = 'income_statement'
-    columns_list = ['ticker', 'endDate', 'type', 'totalRevenue']
-    columns = ','.join(columns_list)
-    req = """SELECT %s FROM %s WHERE ticker='%s' and type='yearly' """ % (columns, table_name, ticker)
-
-    historical_growth_cursor = db.cursor()
-    historical_growth_cursor.execute(req)
-    historical_growth = historical_growth_cursor.fetchall()
-    historical_growth_cursor.close
-
-    ## create the dataframe
-    df_historical_growth = pd.DataFrame(historical_growth, columns=columns_list)
-
-    df_historical_growth = df_historical_growth.sort_values(by=['endDate'])
-    df_historical_growth['growth_rate'] = df_historical_growth['totalRevenue'].pct_change()
-    historical_growth_rate = df_historical_growth['growth_rate'].mean()
-    return historical_growth_rate
+def get_historical_growth_rate(ticker):
+    pass
 
 
 if __name__ == '__main__':
-    ticker = 'TSN'
+    ticker = 'KR'
     # get_input_finance_func(ticker)
     # get_input_price_func(ticker)
     # get_analysis_estimate_revenue(ticker)
-    # get_historical_margin(ticker)
-    get_historical_growth(ticker)
+    get_historical_margin(ticker)
+    get_historical_growth_rate(ticker)

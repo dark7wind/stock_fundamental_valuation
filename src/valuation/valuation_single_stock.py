@@ -1,7 +1,6 @@
 import yaml
 from definitions import INPUT_DIR
-from src.valuation.valuation_input_finance import get_input_finance_func, get_input_price_func, \
-    get_analysis_estimate_revenue, get_historical_margin
+from src.valuation.valuation_input_finance import *
 from src.valuation.valuation_fcff import *
 #from src.valuation.valuation_input_list import *
 
@@ -117,6 +116,9 @@ def valuation_single_stock(ticker, manual_input=True):
             r_gr_high = input_manual['r_gr_high']
         elif growth_input == 'analysis':
             r_gr_next, r_gr_high = get_analysis_estimate_revenue(ticker)
+        elif growth_input == 'historical':
+            r_gr_next = get_historical_growth(ticker)
+            r_gr_high = r_gr_next
 
         length_high_growth = input_manual['length_high_growth']
         length_high_growth_stable = input_manual['length_high_growth_stable']
@@ -240,5 +242,5 @@ def valuation_single_stock(ticker, manual_input=True):
 
 
 if __name__ == '__main__':
-    ticker = 'KR' #'TSN', 'KR' 'ODFL'
+    ticker = 'TSN' #'TSN', 'KR' 'ODFL'
     valuation_single_stock(ticker)
