@@ -15,7 +15,7 @@ def get_input_finance_func(ticker, read_from_sql=True, read_TTM=False):
     if read_from_sql and not read_TTM:
         # income_statement
         table_name = 'income_statement'
-        columns_list = ['endDate', 'type', 'totalRevenue', 'incomeBeforeTax', 'incomeTaxExpense']
+        columns_list = ['endDate', 'type', 'totalRevenue', 'incomeBeforeTax', 'incomeTaxExpense', 'interestExpense']
         columns = ','.join(columns_list)
         req = """SELECT %s FROM %s WHERE ticker='%s' """ % (columns, table_name, ticker)
         income_statement_cursor = db.cursor()
@@ -28,7 +28,7 @@ def get_input_finance_func(ticker, read_from_sql=True, read_TTM=False):
     elif read_from_sql and read_TTM:
         # income_statement_TTM
         table_name = 'income_statement_TTM'
-        columns_list = ['LastUpdatedDate', 'Type', 'TotalRevenue', 'PretaxIncome', 'TaxProvision']
+        columns_list = ['LastUpdatedDate', 'Type', 'TotalRevenue', 'PretaxIncome', 'TaxProvision', 'InterestExpense', 'InterestIncome']
         columns = ','.join(columns_list)
         req = """SELECT %s FROM %s WHERE ticker='%s' """ % (columns, table_name, ticker)
         income_statement_cursor = db.cursor()

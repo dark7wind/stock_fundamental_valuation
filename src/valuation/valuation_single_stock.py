@@ -6,7 +6,7 @@ from src.valuation.valuation_fcff import *
 #from src.valuation.valuation_input_list import *
 
 
-LOAD_TTM = True
+LOAD_TTM = False
 
 def valuation_single_stock(ticker, manual_input=True):
     # load manual input
@@ -47,6 +47,7 @@ def valuation_single_stock(ticker, manual_input=True):
             total_revenue = df_income_statement_current['totalRevenue'].iloc[0]
             income_before_tax = df_income_statement_current['incomeBeforeTax'].iloc[0]
             income_tax_expense = df_income_statement_current['incomeTaxExpense'].iloc[0]
+            interest_expense = df_income_statement_current['interestExpense'].iloc[0]
 
         else:
             df_income_statement, df_balance_sheet, df_stock_statics = get_input_finance_func(ticker, read_from_sql=True,
@@ -60,6 +61,8 @@ def valuation_single_stock(ticker, manual_input=True):
             total_revenue = df_income_statement_current['TotalRevenue'].iloc[0] * 1000
             income_before_tax = df_income_statement_current['PretaxIncome'].iloc[0] * 1000
             income_tax_expense = df_income_statement_current['TaxProvision'].iloc[0] * 1000
+            interest_expense = df_income_statement_current['InterestExpense'].iloc[0] * 1000
+            #interest_income = df_income_statement_current['InterestIncome'].iloc[0] * 1000
 
         print(f'ticker: {ticker}')
         print(f'current year revenue: {total_revenue}')
