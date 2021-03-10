@@ -3,6 +3,9 @@ pd.set_option('display.max_columns', None)
 
 from definitions import PROFILE_DIR
 
+
+# update industry company name, exchange
+def update_table_stock_info_industry()
 file_name = '20210308_indname.xls'
 
 df_info = pd.read_excel(PROFILE_DIR+file_name)
@@ -19,4 +22,6 @@ df_info.columns = df_info.columns.str.replace(' ', '')
 
 df_inf_usa = df_info.loc[(df_info['Exchange']=='NYSE') | (df_info['Exchange']=='NASDAQ')]
 
+
+# UPDATE test SET open=1 WHERE stockId=3 and ticker='TSN';
 1

@@ -15,6 +15,8 @@ db = mdb.connect(host=db_config['db_host'], user=db_config['db_user'], passwd=db
                  db=db_config['db_name'], use_unicode=True, charset="utf8")
 
 df = pd.DataFrame()
+
+# add new stock ticker
 def insert_updated_stock_info_data_into_db(load_local=False):
     # create the time now (utc time)
     now = datetime.datetime.utcnow()

@@ -17,7 +17,7 @@ db = mdb.connect(host=db_config['db_host'], user=db_config['db_user'], passwd=db
                  db=db_config['db_name'], use_unicode=True, charset="utf8")
 
 df = pd.DataFrame()
-def insert_stock_info_data_into_db(load_local=False):
+def insert_stock_info_data_into_db():
     # create the time now (utc time)
     now = datetime.datetime.utcnow()
 
@@ -29,7 +29,11 @@ def insert_stock_info_data_into_db(load_local=False):
     # drop the exchange column
     df_ticker = df_ticker.drop(['exchange'], axis=1)
     # capitalize the column name
-    df_ticker.columns = df_ticker.columns.str.capitalize()
+    new_columns = list()
+    for column in df_ticker.columns:
+        new_column = column[:1].upper() + column[1:]
+        new_columns.append(new_column)
+    df_ticker.columns = new_columns
 
     # usa info industry, exchange, company name
     file_name = '20210308_indname.xls'
@@ -49,7 +53,7 @@ def insert_stock_info_data_into_db(load_local=False):
     ## drop the duplicates
     df_inf_usa = df_inf_usa.drop_duplicates()
 
-    # merge with df_inf_usa
+    ## merge with df_inf_usa
     df = df_ticker.merge(df_inf_usa, left_on='Ticker', right_on='Ticker', how='left')
     # covert nan to empty
     df = df.replace(np.nan, 'empty')
@@ -58,15 +62,16 @@ def insert_stock_info_data_into_db(load_local=False):
     table_name = 'stock_info'
     columns = ','.join(df.columns.values)
     values = ("%s, " * len(df.columns))[:-2]
-    req = """INSERT INTO %s (%s) VALUES (%s)""" % (table_name, columns, values)
 
-    # insert MySQL
     mysql_cursor = db.cursor()
-    chunk_size = 1000
-    for i in range(0, len(df.index), chunk_size):
-        chunk_df = df.iloc[i: i + chunk_size]
-        data = [tuple(x) for x in chunk_df.values.tolist()]
-        mysql_cursor.executemany(req, data)
+    for i in range(len(df.index)):
+        print('update ticker: %s' % df.loc[i,'Ticker'])
+        req = """UPDATE %s SET Dow=%s, Sp500=%s, CreatedDate='%s', LastUpdatedDate='%s', CompanyName='%s', \
+        IndustryGroup='%s', Country='%s', BroadGroup='%s', SubGroup='%s', Exchange='%s' WHERE Ticker='%s' """ % \
+              (table_name, df.loc[i,'Dow'], df.loc[i,'Sp500'], df.loc[i,'CreatedDate'], df.loc[i,'LastUpdatedDate'], \
+               df.loc[i,'CompanyName'], df.loc[i,'IndustryGroup'], df.loc[i,'Country'], df.loc[i,'BroadGroup'], \
+               df.loc[i,'SubGroup'], df.loc[i, 'Exchange'], df.loc[i,'Ticker'])
+        mysql_cursor.execute(req)
         db.commit()
 
     mysql_cursor.close()
