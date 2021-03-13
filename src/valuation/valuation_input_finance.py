@@ -111,10 +111,12 @@ def get_analysis_estimate_revenue(ticker):
     revenue_growth = reveune_growth_cursor.fetchall()
     reveune_growth_cursor.close
 
-    r_gr_next = revenue_growth[0][-2]
+    df_revenue_growth = pd.DataFrame(revenue_growth, columns=columns_list)
+
+    r_gr_next = df_revenue_growth.loc[df_revenue_growth['CurrentYearFlag'] == 1]['SalesGrowth'].iloc[0]
     r_gr_next = float(r_gr_next.strip('%')) / 100
 
-    r_gr_high = revenue_growth[1][-2]
+    r_gr_high = df_revenue_growth.loc[df_revenue_growth['CurrentYearFlag'] == 0]['SalesGrowth'].iloc[0]
     r_gr_high = float(r_gr_high.strip('%')) / 100
 
     return r_gr_next, r_gr_high

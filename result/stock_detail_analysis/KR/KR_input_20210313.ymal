@@ -1,6 +1,6 @@
 # general input
 ## growth rate
-growth_input: 'analysis' # 'manual', 'analysis', 'historical'
+growth_input: 'historical' # 'manual', 'analysis', 'historical'
 r_gr_next: 0.4
 r_gr_high: -0.05
 length_high_growth: 10

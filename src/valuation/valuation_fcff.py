@@ -226,7 +226,10 @@ def present_value_growth_period_func(revenue_list, ebit_list, growth_list, margi
         'Check the length of the list of growth, sales_to_capital and cost_capital'
     n = len(growth_list)
     # present value
+    value_fcff_list = list()
     present_value_list = list()
+    ebit_after_tax_list = list()
+    reinvestment_list = list()
     for i in range(n):
         revenue_previous = revenue_list[i]
         revenue_current = revenue_list[i+1]
@@ -234,6 +237,9 @@ def present_value_growth_period_func(revenue_list, ebit_list, growth_list, margi
         value_reinvestment = reinvestment_func(revenue_current, revenue_previous, sales_to_capital_list[i])
         value_fcff = fcff_func(ebit_after_tax, value_reinvestment)
         value_present = present_value_func(value_fcff, cost_capital_list[:i+1])
+        ebit_after_tax_list.append(ebit_after_tax)
+        reinvestment_list.append(value_reinvestment)
+        value_fcff_list.append(value_fcff)
         present_value_list.append(value_present)
     present_value_total = np.sum(present_value_list)
     return present_value_total, present_value_list
@@ -306,7 +312,7 @@ def effective_tax_rate_func(taxable_income, tax_paid, marginal_tax_rate, estimat
         pass # to do
     if effective_tax_rate < 0:
         effective_tax_rate = estimate_effective_tax_rate
-    elif effective_tax_rate > 1:
+    elif effective_tax_rate > 0.25:
         effective_tax_rate = marginal_tax_rate
 
     return effective_tax_rate
@@ -351,11 +357,11 @@ def cost_of_capital_list_func(cost_capital_first, length_high_growth, length_hig
                               flag_cost_capital_terminal_override=False):
     if flag_cost_capital_terminal_override:
         cost_capital_terminal = cost_capital_terminal_override
+    elif flag_risk_free_terminal_override:
+        cost_capital_terminal = risk_free_terminal_override + mature_ERP
     else:
-        if flag_risk_free_terminal_override:
-            cost_capital_terminal = risk_free_terminal_override + mature_ERP
-        else:
-            cost_capital_terminal = risk_free + mature_ERP
+        cost_capital_terminal = risk_free + mature_ERP
+
     cost_capital_list = list()
     for i in range(1, length_high_growth+1):
         if i <= length_high_growth_stable:

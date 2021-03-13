@@ -44,7 +44,7 @@ def download_income_statement_TTM():
                 df_income_statement['Ticker'] = ticker
                 df_income_statement['StockId'] = stock_id
                 df_income_statement_total = df_income_statement_total.append(df_income_statement, ignore_index=True)
-            time.sleep(3)
+            time.sleep(10)
         # concat two dataframes
         df_income_statement_total.columns = df_income_statement_total.columns.str.replace(' ', '')
 

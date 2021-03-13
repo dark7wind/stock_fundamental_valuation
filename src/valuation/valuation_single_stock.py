@@ -5,11 +5,12 @@ from src.valuation.valuation_fcff import *
 #from src.valuation.valuation_input_list import *
 
 
-LOAD_TTM = False
+LOAD_TTM = True
 
-def valuation_single_stock(ticker, manual_input=True):
+def valuation_single_stock(ticker, input_config_dir, input_config_file):
     # load manual input
-    with open(INPUT_DIR) as f:
+    input_config_DIR = input_config_dir + input_config_file
+    with open(input_config_DIR) as f:
         input_manual = yaml.load(f, Loader=yaml.FullLoader)
 
     # load manual default assumption
@@ -110,7 +111,7 @@ def valuation_single_stock(ticker, manual_input=True):
         print(f'invested capital: {invested_capital}')
 
         ## growth
-        growth_input = 'analysis'
+        growth_input = input_manual['growth_input']
         if growth_input == 'manual':
             r_gr_next = input_manual['r_gr_next']
             r_gr_high = input_manual['r_gr_high']
@@ -125,7 +126,7 @@ def valuation_single_stock(ticker, manual_input=True):
 
 
         ## margin
-        margin_input = 'historical_mean'
+        margin_input = input_manual['margin_input']
         if margin_input == 'manual':
             margin_next_year = input_manual['margin_next_year']
             margin_target = input_manual['margin_target']
@@ -192,6 +193,7 @@ def valuation_single_stock(ticker, manual_input=True):
             cost_capital = input_manual['cost_capital']
         else:
             pass
+
         cost_capital_list = cost_of_capital_list_func(cost_capital, length_high_growth, length_high_growth_stable,
                                                       r_riskfree, mature_ERP, risk_free_terminal_override,
                                                       cost_capital_terminal_override, flag_risk_free_terminal_override,
@@ -203,11 +205,12 @@ def valuation_single_stock(ticker, manual_input=True):
                                                                          margin_list, tax_rate_list, nol_list, \
                                                                          sales_to_capital_list, cost_capital_list)
         print(f'present value in growth period: {pv_growth}')
+        print(f'present value list in growth period: {present_value_list}')
 
         ## present_value -> terminal period
         pv_terminal = present_value_terminal_func(revenue_list, growth_list[-1], margin_list, tax_terminal, \
-                                                  terminal_roic, cost_capital_list)
-        print(f'present value in growth period: {pv_terminal}')
+                                                  terminal_roic, cost_capital_list)   ## terminal_roic --> to do
+        print(f'present value in terminal period: {pv_terminal}')
 
         ## sum of present value
         pv_sum = pv_growth + pv_terminal
@@ -242,5 +245,7 @@ def valuation_single_stock(ticker, manual_input=True):
 
 
 if __name__ == '__main__':
-    ticker = 'TSN' #'TSN', 'KR' 'ODFL'
-    valuation_single_stock(ticker)
+    ticker = 'RL' #'TSN', 'KR' 'ODFL' 'RL', 'MAR'
+    input_config_dir = INPUT_DIR
+    input_config_file = 'input.ymal'
+    valuation_single_stock(ticker, input_config_dir, input_config_file)
