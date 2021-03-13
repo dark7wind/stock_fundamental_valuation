@@ -14,7 +14,7 @@ pd.set_option('display.max_columns', None)
 def download_analysis_info():
     file_date = datetime.datetime.utcnow()
     file_date = file_date.strftime("%Y%m%d")
-    file_analysis_info_revenue = 'analysis_info_revenue.csv'
+    file_analysis_info_revenue = 'analysis_info_revenue_sp500.csv'
 
     if os.path.exists(ANALYSIS_INFO_DIR+file_date+'_'+file_analysis_info_revenue):
         df_analysis_info_revenue_total = pd.read_csv(ANALYSIS_INFO_DIR+file_date+'_'+file_analysis_info_revenue)

@@ -2,7 +2,7 @@ import MySQLdb as mdb
 import pandas as pd
 import datetime
 import yaml
-from src.data.download_cash_flow import download_cahs_flow
+from src.data.download_cash_flow_sp500 import download_cahs_flow
 from definitions import DATABASE_CONFIG_DIR
 
 def insert_updated_cash_flow_data_into_db():

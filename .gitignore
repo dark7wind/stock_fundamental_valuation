@@ -136,3 +136,4 @@ database/database_config/database.ymal
 
 # large csv file
 *_historical_price.csv
+*.csv
