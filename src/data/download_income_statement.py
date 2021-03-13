@@ -19,7 +19,7 @@ def download_income_statement():
         # print(df_income_statement_total.columns)
         return df_income_statement_total
     else:
-        # connect the database
+        # connect the databasefrom yahoo_fin.stock_info import *
         with open(DATABASE_CONFIG_DIR) as f:
             db_config = yaml.load(f, Loader=yaml.FullLoader)
 

@@ -6,7 +6,7 @@ import pandas as pd
 pd.set_option('display.max_columns', None)
 from src.valuation.valuation_single_stock import *
 
-def valuation_multiple_stock():
+def valuation_multiple_stock(input_config_dir, input_config_file):
     # load the database configuration
     with open(DATABASE_CONFIG_DIR) as f:
         db_config = yaml.load(f, Loader=yaml.FullLoader)
@@ -30,7 +30,7 @@ def valuation_multiple_stock():
     price_to_value_list = list()
     n = 1
     for stock_id, ticker in stockId_ticker:
-        estimated_value, current_price, price_to_value = valuation_single_stock(ticker)
+        estimated_value, current_price, price_to_value = valuation_single_stock(ticker, input_config_dir, input_config_file)
         print(f'number: {n}, stock: {ticker}, estimated_value: {estimated_value}, price_to_value: {price_to_value}')
         ticker_list.append(ticker)
         estimated_value_list.append(estimated_value)
@@ -48,4 +48,6 @@ def valuation_multiple_stock():
     1
 
 if __name__ == '__main__':
-    valuation_multiple_stock()
+    input_config_dir = INPUT_DIR
+    input_config_file = 'input.ymal'
+    valuation_multiple_stock(input_config_dir, input_config_file)

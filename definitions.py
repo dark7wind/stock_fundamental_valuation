@@ -11,5 +11,6 @@ ANALYSIS_INFO_DIR = os.path.join(ROOT_DIR, 'data/fundamental/analysis_info/')
 PROFILE_DIR = os.path.join(ROOT_DIR, 'data/fundamental/profile/')
 
 DATABASE_CONFIG_DIR = os.path.join(ROOT_DIR, 'database/database_config/database.ymal')
-INPUT_DIR = os.path.join(ROOT_DIR, 'input/input.ymal')
+INPUT_DIR = os.path.join(ROOT_DIR, 'input/')
+INPUT_DETAIL_STOCK_DIR = os.path.join(ROOT_DIR, 'result/stock_detail_analysis/')
 RESULT_DIR = os.path.join(ROOT_DIR, 'result/')
