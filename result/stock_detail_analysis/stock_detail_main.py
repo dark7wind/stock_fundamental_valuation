@@ -5,7 +5,7 @@ import os
 
 
 # dd/mm/YY
-ticker = 'KR'
+ticker = 'LYB'
 input_config_dir = os.path.join(INPUT_DETAIL_STOCK_DIR, ticker+'/')
 
 today = date.today()

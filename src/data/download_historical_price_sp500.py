@@ -115,5 +115,5 @@ def download_updated_price():
 
 
 if __name__ == '__main__':
-    download_historical_price()
-    # download_updated_price()
+    # download_historical_price()
+    download_updated_price()

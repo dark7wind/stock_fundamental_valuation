@@ -302,6 +302,46 @@ CREATE TABLE IF NOT EXISTS `securities_database`.`analysis_info_revenue` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `securities_database`.`industry`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `securities_database`.`industry`;
+
+CREATE TABLE IF NOT EXISTS `securities_database`.`industry` (
+  `Id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `CreatedDate` DATE NOT NULL,
+  `LastUpdatedDate` DATE NOT NULL,
+  `Date` DATE NOT NULL,
+  `Region` VARCHAR(32) NOT NULL,
+  `IndustryName` VARCHAR(45) NULL,
+  `Numberoffirms` TINYINT NULL,
+  `AnnualAverageRevenuegrowthLast5years` NULL,
+  `PretaxOperatingMarginUnadjusted`  NULL,
+  `AftertaxROC`  NULL,
+  `Averageeffectivetaxrate` NULL,
+  `UnleveredBeta` NULL,
+  `EquityLeveredBeta` NULL,
+  `Stddeviationinstockprices` NULL,
+  `Pretaxcostofdebt` NULL,
+  `MarketDebtCapital` NULL,
+  `Costofcapital` NULL,
+  `SalesCapital` NULL,
+  `EVSales` NULL,
+  `EVEBITDA` NULL,
+  `EVEBIT` NULL,
+  `PriceBook` NULL,
+  `TrailingPE` NULL,
+  `NoncashWCasofRevenues` NULL,
+  `CapExasofRevenues` NULL,
+  `NetCapExasofRevenues` NULL,
+  `ReinvestmentRate` NULL,
+  `ROE` NULL,
+  `DividendPayoutRatio` NULL,
+  `EquityReinvestmentRate` NULL,
+  `PretaxOperatingMarginLeaseRDadjusted` NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
