@@ -12,7 +12,7 @@ from definitions import DATABASE_CONFIG_DIR, INCOME_STATEMENT_DIR
 def download_income_statement():
     file_date = datetime.datetime.utcnow()
     file_date = file_date.strftime("%Y%m%d")
-    file_income_statement = 'income_statement.csv'
+    file_income_statement = 'income_statement_nasdaq.csv'
 
     if os.path.exists(INCOME_STATEMENT_DIR+file_date+'_'+file_income_statement):
         df_income_statement_total = pd.read_csv(INCOME_STATEMENT_DIR+file_date+'_'+file_income_statement)
@@ -29,7 +29,7 @@ def download_income_statement():
         # select stockId and ticker from table stock_info
         table_name = 'stock_info'
         columns = ','.join(['stockId', 'ticker'])
-        req = """SELECT %s FROM %s WHERE sp500=TRUE """ % (columns, table_name)
+        req = """SELECT %s FROM %s WHERE exchange='NASDAQ' """ % (columns, table_name)
         get_ticker_cursor = db.cursor()
         get_ticker_cursor.execute(req)
         stockId_ticker = get_ticker_cursor.fetchall()

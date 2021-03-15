@@ -10,7 +10,7 @@ import time
 def download_income_statement_TTM():
     file_date = datetime.datetime.utcnow()
     file_date = file_date.strftime("%Y%m%d")
-    file_income_statement = 'income_statement_TTM.csv'
+    file_income_statement = 'income_statement_TTM_sp500.csv'
 
     if os.path.exists(INCOME_STATEMENT_DIR+file_date+'_'+file_income_statement):
         df_income_statement_total = pd.read_csv(INCOME_STATEMENT_DIR+file_date+'_'+file_income_statement)

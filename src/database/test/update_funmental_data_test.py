@@ -2,7 +2,7 @@ import MySQLdb as mdb
 import pandas as pd
 import datetime
 import yaml
-from src.data.download_historical_price import download_historical_price
+from src.data.download_historical_price_sp500 import download_historical_price
 from definitions import DATABASE_CONFIG_DIR
 
 

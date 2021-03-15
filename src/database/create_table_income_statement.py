@@ -2,7 +2,7 @@ import MySQLdb as mdb
 import pandas as pd
 import datetime
 import yaml
-from src.data.download_income_statement import download_income_statement
+from src.data.download_income_statement_sp500 import download_income_statement
 from definitions import DATABASE_CONFIG_DIR
 
 
