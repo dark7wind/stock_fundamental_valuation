@@ -5,7 +5,7 @@ import yaml
 from src.data.download_cash_flow_sp500 import download_cahs_flow
 from definitions import DATABASE_CONFIG_DIR
 
-def insert_cash_flow_data_into_db():
+def insert_updated_cash_flow_data_into_db():
     # load the database configuration
     with open(DATABASE_CONFIG_DIR) as f:
         db_config = yaml.load(f, Loader=yaml.FullLoader)
@@ -32,7 +32,7 @@ def insert_cash_flow_data_into_db():
     table_name = 'cash_flow'
     columns = ','.join(df.columns.values)
     values = ("%s, " * len(df.columns))[:-2]
-    req = """INSERT INTO %s (%s) VALUES (%s)""" % (table_name, columns, values)
+    req = """INSERT IGNORE INTO %s (%s) VALUES (%s)""" % (table_name, columns, values)
 
     # insert MySQL
     mysql_cursor = db.cursor()
@@ -49,4 +49,4 @@ def insert_cash_flow_data_into_db():
 
 
 if __name__ == '__main__':
-    insert_cash_flow_data_into_db()
+    insert_updated_cash_flow_data_into_db()

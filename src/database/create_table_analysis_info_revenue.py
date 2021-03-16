@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import datetime
 import yaml
-from src.data.download_analysis_info import download_analysis_info
+from src.data.download_analysis_info_sp500 import download_analysis_info
 from definitions import DATABASE_CONFIG_DIR
 
 def insert_analysis_info_revenue_data_into_db():

@@ -302,6 +302,47 @@ CREATE TABLE IF NOT EXISTS `securities_database`.`analysis_info_revenue` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `securities_database`.`industry`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `securities_database`.`industry`;
+
+CREATE TABLE IF NOT EXISTS `securities_database`.`industry` (
+  `Id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `CreatedDate` DATE NOT NULL,
+  `LastUpdatedDate` DATE NOT NULL,
+  `Date` DATE NOT NULL,
+  `Region` VARCHAR(32) NOT NULL,
+  `IndustryName` VARCHAR(45) NULL,
+  `Numberoffirms` INT NULL,
+  `AnnualAverageRevenuegrowthLast5years` VARCHAR(32) NULL,
+  `PretaxOperatingMarginUnadjusted` VARCHAR(32) NULL,
+  `AftertaxROC` VARCHAR(32) NULL,
+  `Averageeffectivetaxrate` VARCHAR(32) NULL,
+  `UnleveredBeta` FLOAT NULL,
+  `EquityLeveredBeta` FLOAT NULL,
+  `Costofequity` VARCHAR(32) NULL,
+  `Stddeviationinstockprices` VARCHAR(32) NULL,
+  `Pretaxcostofdebt` VARCHAR(32) NULL,
+  `MarketDebtCapital` VARCHAR(32) NULL,
+  `Costofcapital` VARCHAR(32) NULL,
+  `SalesCapital` FLOAT NULL,
+  `EVSales` FLOAT NULL,
+  `EVEBITDA` FLOAT NULL,
+  `EVEBIT` FLOAT NULL,
+  `PriceBook` FLOAT NULL,
+  `TrailingPE` FLOAT NULL,
+  `NoncashWCasofRevenues` VARCHAR(32) NULL,
+  `CapExasofRevenues` VARCHAR(32) NULL,
+  `NetCapExasofRevenues` VARCHAR(32) NULL,
+  `ReinvestmentRate` VARCHAR(32) NULL,
+  `ROE` VARCHAR(32) NULL,
+  `DividendPayoutRatio` VARCHAR(32) NULL,
+  `EquityReinvestmentRate` VARCHAR(32) NULL,
+  `PretaxOperatingMarginLeaseRDadjusted` VARCHAR(32) NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

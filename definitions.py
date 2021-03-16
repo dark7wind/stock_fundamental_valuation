@@ -9,6 +9,7 @@ STATISTICS_DIR = os.path.join(ROOT_DIR, 'data/fundamental/statistics/')
 HISTORICAL_PRICE_DIR = os.path.join(ROOT_DIR, 'data/historical_price/')
 ANALYSIS_INFO_DIR = os.path.join(ROOT_DIR, 'data/fundamental/analysis_info/')
 PROFILE_DIR = os.path.join(ROOT_DIR, 'data/fundamental/profile/')
+INDUSTRY_DIR = os.path.join(ROOT_DIR, 'data/fundamental/industry/')
 
 DATABASE_CONFIG_DIR = os.path.join(ROOT_DIR, 'database/database_config/database.ymal')
 INPUT_DIR = os.path.join(ROOT_DIR, 'input/')

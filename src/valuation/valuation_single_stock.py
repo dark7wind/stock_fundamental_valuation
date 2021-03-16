@@ -245,7 +245,7 @@ def valuation_single_stock(ticker, input_config_dir, input_config_file):
 
 
 if __name__ == '__main__':
-    ticker = 'RL' #'TSN', 'KR' 'ODFL' 'RL', 'MAR'
+    ticker = 'HBI' #'TSN', 'KR' 'ODFL' 'RL', 'MAR'
     input_config_dir = INPUT_DIR
     input_config_file = 'input.ymal'
     valuation_single_stock(ticker, input_config_dir, input_config_file)

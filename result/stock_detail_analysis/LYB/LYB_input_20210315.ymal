@@ -17,7 +17,7 @@ flag_lease: False
 
 # cost of capital
 cost_capital_manual: True
-cost_capital: 0.0656 #0.0656 #0.07 #0.065
+cost_capital: 0.0645 #0.0656 #0.07 #0.065
 
 mature_ERP: 0.0472
 

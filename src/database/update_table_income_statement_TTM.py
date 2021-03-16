@@ -2,7 +2,7 @@ import MySQLdb as mdb
 import pandas as pd
 import datetime
 import yaml
-from src.data.download_income_statement_TTM import download_income_statement_TTM
+from src.data.download_income_statement_TTM_sp500 import download_income_statement_TTM
 from definitions import DATABASE_CONFIG_DIR
 
 def insert_updated_income_statement_TTM_data_into_db():
