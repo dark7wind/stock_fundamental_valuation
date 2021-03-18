@@ -8,7 +8,7 @@ from definitions import DATABASE_CONFIG_DIR
 
 
 
-def insert_updated_income_statement_data_into_db():
+def insert_updated_income_statement_nyse_into_db():
     # load the database configuration
     with open(DATABASE_CONFIG_DIR) as f:
         db_config = yaml.load(f, Loader=yaml.FullLoader)
@@ -51,4 +51,4 @@ def insert_updated_income_statement_data_into_db():
 
 
 if __name__ == '__main__':
-    insert_updated_income_statement_data_into_db()
+    insert_updated_income_statement_nyse_into_db()

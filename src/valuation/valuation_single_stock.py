@@ -13,6 +13,8 @@ def valuation_single_stock(ticker, input_config_dir, input_config_file):
     with open(input_config_DIR) as f:
         input_manual = yaml.load(f, Loader=yaml.FullLoader)
 
+    # finance input
+    finance_input = input_manual['finance_input']
     # load manual default assumption
     mature_ERP = input_manual['mature_ERP']
     ## default assumption
@@ -32,7 +34,7 @@ def valuation_single_stock(ticker, input_config_dir, input_config_file):
 
     try:
         ## load income statement and balance sheet
-        if not LOAD_TTM:
+        if finance_input == 'Yahoo':
             df_income_statement, df_balance_sheet, df_stock_statics = get_input_finance_func(ticker, read_from_sql=True,
                                                                                              read_TTM=False)
             df_income_statement_yearly = df_income_statement.loc[(df_income_statement['type'] == 'yearly')]
@@ -49,7 +51,7 @@ def valuation_single_stock(ticker, input_config_dir, input_config_file):
             income_tax_expense = df_income_statement_current['incomeTaxExpense'].iloc[0]
             interest_expense = df_income_statement_current['interestExpense'].iloc[0]
 
-        else:
+        elif finance_input == 'Yahoo_TTM':
             df_income_statement, df_balance_sheet, df_stock_statics = get_input_finance_func(ticker, read_from_sql=True,
                                                                                              read_TTM=True)
             df_income_statement_current = df_income_statement.loc[df_income_statement['LastUpdatedDate'] == \
@@ -63,20 +65,37 @@ def valuation_single_stock(ticker, input_config_dir, input_config_file):
             income_tax_expense = df_income_statement_current['TaxProvision'].iloc[0] * 1000
             interest_expense = df_income_statement_current['InterestExpense'].iloc[0] * 1000
             #interest_income = df_income_statement_current['InterestIncome'].iloc[0] * 1000
+        elif finance_input == 'manual':
+            _, _, df_stock_statics = get_input_finance_func(ticker, read_from_sql=True, read_TTM=True)
+            total_revenue = input_manual['total_revenue']
+            income_before_tax = input_manual['income_before_tax']
+            income_tax_expense = input_manual['income_tax_expense']
+            interest_expense = input_manual['interest_expense']
 
         print(f'ticker: {ticker}')
         print(f'current year revenue: {total_revenue}')
         print(f'current year income before tax: {income_before_tax}')
         print(f'current year tax expense: {income_tax_expense}')
+        print(f'current year interest expense: {interest_expense}')
 
-        short_term_debt = df_balance_sheet_current['shortLongTermDebt'].iloc[0]
-        long_term_debt = df_balance_sheet_current['longTermDebt'].iloc[0]
-        debt_bv = short_term_debt + long_term_debt
-        equity_bv = df_balance_sheet_current['totalStockholderEquity'].iloc[0]
-        cash = df_balance_sheet_current['cash'].iloc[0]
-        minority_interests = df_balance_sheet_current['minorityInterest'].iloc[0]
-        non_operating_assets = 0 # default (to do)
-        options = 0 # default (to do)
+        if finance_input == 'manual':
+            short_term_debt = input_manual['short_term_debt']
+            long_term_debt = input_manual['long_term_debt']
+            debt_bv = short_term_debt + long_term_debt
+            equity_bv = input_manual['equity_bv']
+            cash = input_manual['cash_marketable_securities']
+            minority_interests = input_manual['minority_interests']
+            non_operating_assets = input_manual['non_operating_assets']
+            options = input_manual['options']
+        else:
+            short_term_debt = df_balance_sheet_current['shortLongTermDebt'].iloc[0]
+            long_term_debt = df_balance_sheet_current['longTermDebt'].iloc[0]
+            debt_bv = short_term_debt + long_term_debt
+            equity_bv = df_balance_sheet_current['totalStockholderEquity'].iloc[0]
+            cash = df_balance_sheet_current['cash'].iloc[0]
+            minority_interests = df_balance_sheet_current['minorityInterest'].iloc[0]
+            non_operating_assets = 0 # default (to do)
+            options = 0 # default (to do)
         print(f'book value of debt: {debt_bv}')
         print(f'book value of equity: {equity_bv}')
         print(f'cash and marketable securities: {cash}')

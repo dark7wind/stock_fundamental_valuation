@@ -5,7 +5,7 @@ import yaml
 from src.data.download_cash_flow_sp500 import download_cahs_flow
 from definitions import DATABASE_CONFIG_DIR
 
-def insert_updated_cash_flow_data_into_db():
+def insert_updated_cash_flow_sp500_into_db():
     # load the database configuration
     with open(DATABASE_CONFIG_DIR) as f:
         db_config = yaml.load(f, Loader=yaml.FullLoader)
@@ -49,4 +49,4 @@ def insert_updated_cash_flow_data_into_db():
 
 
 if __name__ == '__main__':
-    insert_updated_cash_flow_data_into_db()
+    insert_updated_cash_flow_sp500_into_db()

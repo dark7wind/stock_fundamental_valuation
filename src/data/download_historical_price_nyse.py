@@ -95,7 +95,7 @@ def download_updated_price():
                 req = """SELECT MAX(%s) FROM %s WHERE ticker = '%s'""" % (columns, table_name, ticker)
                 get_latest_date_cursor.execute(req)
                 latest_date = get_latest_date_cursor.fetchall()
-                latest_date = latest_date[0][0]
+                latest_date = latest_date[0][0][:10]
                 latest_date = datetime.datetime.strptime(latest_date, '%Y-%m-%d')
                 start_date = latest_date + datetime.timedelta(days=1)
                 start_date = start_date.strftime('%Y-%m-%d')
