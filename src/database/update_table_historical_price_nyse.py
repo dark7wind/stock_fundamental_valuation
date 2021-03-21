@@ -2,10 +2,10 @@ import MySQLdb as mdb
 import pandas as pd
 import datetime
 import yaml
-from src.data.download_historical_price_nasdaq import download_updated_price
+from src.data.download_historical_price_nyse import download_updated_price
 from definitions import DATABASE_CONFIG_DIR
 
-def insert_updated_price_nasdaq_into_db():
+def insert_updated_price_nyse_into_db():
     # load the database configuration
     with open(DATABASE_CONFIG_DIR) as f:
         db_config = yaml.load(f, Loader=yaml.FullLoader)
@@ -48,4 +48,4 @@ def insert_updated_price_nasdaq_into_db():
 
 
 if __name__ == '__main__':
-    insert_updated_price_nasdaq_into_db()
+    insert_updated_price_nyse_into_db()

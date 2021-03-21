@@ -5,7 +5,7 @@ import yaml
 from src.data.download_historical_price_sp500 import download_updated_price
 from definitions import DATABASE_CONFIG_DIR
 
-def insert_updated_price_data_into_db():
+def insert_updated_price_sp500_into_db():
     # load the database configuration
     with open(DATABASE_CONFIG_DIR) as f:
         db_config = yaml.load(f, Loader=yaml.FullLoader)
@@ -32,7 +32,7 @@ def insert_updated_price_data_into_db():
     table_name = 'historical_price'
     columns = ','.join(df.columns.values)
     values = ("%s, " * len(df.columns))[:-2]
-    req = """INSERT INTO %s (%s) VALUES (%s)""" % (table_name, columns, values)
+    req = """INSERT IGNORE INTO %s (%s) VALUES (%s)""" % (table_name, columns, values)
 
     # insert MySQL
     mysql_cursor = db.cursor()
@@ -48,4 +48,4 @@ def insert_updated_price_data_into_db():
 
 
 if __name__ == '__main__':
-    insert_updated_price_data_into_db()
+    insert_updated_price_sp500_into_db()
