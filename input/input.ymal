@@ -20,14 +20,14 @@ growth_input: 'analysis' # 'manual', 'analysis', 'historical'
 r_gr_next: 0.4
 r_gr_high: -0.05
 length_high_growth: 10
-length_high_growth_stable: 5
+length_high_growth_stable: 2
 
 ## margin
 margin_input: 'historical_mean' # 'manual', 'historical_mean', 'historical_recent'
 margin_next_year: 0.389 # KR -> 0.0266  TSN -> 0.07
 margin_target: 0.389 # KR -> 0.0266  TSN -> 0.07
 converge_year: 3
-r_riskfree: 0.0154
+r_riskfree: 0.0166
 flag_sales_to_capital: "company"
 flag_lease: False
 

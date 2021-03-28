@@ -5,8 +5,8 @@ from src.database.update_table_income_statement_TTM_nasdaq import insert_updated
 insert_updated_income_statement_TTM_sp500_into_db()
 print('complete update income statement sp500')
 
-insert_updated_income_statement_TTM_nyse_into_db()
+#insert_updated_income_statement_TTM_nyse_into_db()
 print('complete update income statement nyse')
 
-insert_updated_income_statement_TTM_nasdaq_into_db()
+#insert_updated_income_statement_TTM_nasdaq_into_db()
 print('complete update income statement nasdaq')
