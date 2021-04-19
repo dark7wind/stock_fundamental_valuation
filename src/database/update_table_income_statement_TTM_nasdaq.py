@@ -2,10 +2,10 @@ import MySQLdb as mdb
 import pandas as pd
 import datetime
 import yaml
-from src.data.download_income_statement_TTM_sp500 import download_income_statement_TTM
+from src.data.download_income_statement_TTM_nasdaq import download_income_statement_TTM
 from definitions import DATABASE_CONFIG_DIR
 
-def insert_updated_income_statement_TTM_data_into_db():
+def insert_updated_income_statement_TTM_nasdaq_into_db():
     # load the database configuration
     with open(DATABASE_CONFIG_DIR) as f:
         db_config = yaml.load(f, Loader=yaml.FullLoader)
@@ -53,4 +53,4 @@ def insert_updated_income_statement_TTM_data_into_db():
     mysql_cursor.close()
 
 if __name__ == '__main__':
-    insert_updated_income_statement_TTM_data_into_db()
+    insert_updated_income_statement_TTM_nasdaq_into_db()

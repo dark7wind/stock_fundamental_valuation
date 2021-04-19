@@ -18,7 +18,7 @@ def valuation_multiple_stock(input_config_dir, input_config_file):
     # select stockId and ticker from table stock_info
     table_name = 'stock_info'
     columns = ','.join(['stockId', 'ticker'])
-    req = """SELECT %s FROM %s WHERE sp500=TRUE """ % (columns, table_name)
+    req = """SELECT %s FROM %s WHERE exchange='NASDAQ' """ % (columns, table_name)
     get_ticker_cursor = db.cursor()
     get_ticker_cursor.execute(req)
     stockId_ticker = get_ticker_cursor.fetchall()
@@ -42,7 +42,7 @@ def valuation_multiple_stock(input_config_dir, input_config_file):
                                 columns =['ticker', 'current_price', 'estimated_value', 'price_to_value'])
     file_date = datetime.datetime.utcnow()
     file_date = file_date.strftime("%Y%m%d")
-    file_name = 'valuation_result.csv'
+    file_name = 'valuation_result_nasdaq.csv'
 
     df_valuation.to_csv(RESULT_DIR + file_date + '_' + file_name, index=False)
     1

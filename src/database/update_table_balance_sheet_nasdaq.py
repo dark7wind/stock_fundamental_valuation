@@ -6,7 +6,7 @@ from src.data.download_balance_sheet_nasdaq import download_balance_sheet
 from definitions import DATABASE_CONFIG_DIR
 
 
-def insert_updated_balance_sheet_data_into_db():
+def insert_updated_balance_sheet_nasdaq_into_db():
     # load the database configuration
     with open(DATABASE_CONFIG_DIR) as f:
         db_config = yaml.load(f, Loader=yaml.FullLoader)
@@ -51,4 +51,4 @@ def insert_updated_balance_sheet_data_into_db():
 
 
 if __name__ == '__main__':
-    insert_updated_balance_sheet_data_into_db()
+    insert_updated_balance_sheet_nasdaq_into_db()
