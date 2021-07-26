@@ -49,6 +49,7 @@ financial data.
 `git checkout -b issxx`
 3. When the issue is resolved, push the codes to the remote repository in www.github.com
 4. In GitHUb, click `Compare & pull request`, see example below:
-
-5. sdf
-6. 
+![alt text](./readme/screenshot_compare_pull_request.png)
+5. sdfs
+6. sdf
+7. 
