@@ -48,4 +48,7 @@ financial data.
 2. Create a branch in local repository <br>
 `git checkout -b issxx`
 3. When the issue is resolved, push the codes to the remote repository in www.github.com
-4. sdfsf
+4. In GitHUb, click `Compare & pull request`, see example below:
+
+5. sdf
+6. 
