@@ -52,5 +52,11 @@ financial data.
 ![alt text](./readme/screenshot_compare_pull_request.png)
 5. In Github, click `Create pull request`, base: `dev`, compare: `[branch]`
 ![alt text](./readme/screenshot_create_pull_request.png)
-7. sdf
-8. 
+7. Click `merge pull request`
+![alt text](./readme/screenshot_merge_pull_request.png)
+8. Delete branch in Github
+9. Close issue in Github
+10. At local, switch to `dev` branch: `git checkout dev`
+11. At local, pull from dev in Github: `git pull`
+12. At local, delete the branch: `git branch -d iss56`
+13. At local, create new branch according to the name of issue: `git checkout -b iss58`
