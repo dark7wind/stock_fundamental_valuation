@@ -48,8 +48,9 @@ financial data.
 2. Create a branch in local repository <br>
 `git checkout -b issxx`
 3. When the issue is resolved, push the codes to the remote repository in www.github.com
-4. In GitHUb, click `Compare & pull request`, see example below:
+4. In Github, click `Compare & pull request`, see example below:
 ![alt text](./readme/screenshot_compare_pull_request.png)
-5. sdfs
-6. sdf
-7. 
+5. In Github, click `Create pull request`, base: `dev`, compare: `[branch]`
+![alt text](./readme/screenshot_create_pull_request.png)
+7. sdf
+8. 
