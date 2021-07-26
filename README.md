@@ -39,5 +39,18 @@ financial data.
 2. Monthly update
 * update stock info
 
-3. yearly
+3. Yearly update
 * update industry 
+
+
+# Git
+1. Create issue xx at www.github.com
+2. Create a branch in local repository <br>
+`git checkout -b issxx`
+3. When the issue is resolved, push the codes to the remote repository in www.github.com
+4. In Github, click `Compare & pull request`, see example below:
+![alt text](./readme/screenshot_compare_pull_request.png)
+5. In Github, click `Create pull request`, base: `dev`, compare: `[branch]`
+![alt text](./readme/screenshot_create_pull_request.png)
+7. sdf
+8. 

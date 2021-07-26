@@ -187,6 +187,8 @@ def get_historical_growth(ticker):
     historical_growth_rate = df_historical_growth['growth_rate'].mean()
     return historical_growth_rate
 
+def get_historical_growth_except_2020(ticker):
+    pass
 
 if __name__ == '__main__':
     ticker = 'TSN'
