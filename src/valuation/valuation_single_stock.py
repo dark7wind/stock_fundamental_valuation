@@ -139,6 +139,7 @@ def valuation_single_stock(ticker, input_config_dir, input_config_file):
         elif growth_input == 'historical':
             r_gr_next = get_historical_growth(ticker)
             r_gr_high = r_gr_next
+            1
 
         length_high_growth = input_manual['length_high_growth']
         length_high_growth_stable = input_manual['length_high_growth_stable']
