@@ -27,6 +27,8 @@ def insert_updated_income_statement_nyse_into_db():
     # createDate and lastUpdatedDate
     df['createdDate'] = now
     df['lastUpdatedDate'] = now
+    ## due to new version of yahoo_fin (0.8.9.1)
+    df = df.drop(columns=['index'])
 
     # covert nan to empty
     df = df.fillna(0)

@@ -31,11 +31,15 @@ def insert_updated_income_statement_sp500_into_db():
     # covert nan to empty
     df = df.fillna(0)
 
+
     # create req strings
     table_name = 'income_statement'
     columns = ','.join(df.columns.values)
     values = ("%s, " * len(df.columns))[:-2]
     req = """INSERT IGNORE INTO %s (%s) VALUES (%s)""" % (table_name, columns, values)
+
+
+
 
     # insert MySQL
     mysql_cursor = db.cursor()
