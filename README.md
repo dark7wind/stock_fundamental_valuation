@@ -52,11 +52,58 @@ financial data.
 ![alt text](./readme/screenshot_compare_pull_request.png)
 5. In Github, click `Create pull request`, base: `dev`, compare: `[branch]`
 ![alt text](./readme/screenshot_create_pull_request.png)
-7. Click `merge pull request`
+6. Click `merge pull request`
 ![alt text](./readme/screenshot_merge_pull_request.png)
-8. Delete branch in Github
-9. Close issue in Github
-10. At local, switch to `dev` branch: `git checkout dev`
-11. At local, pull from dev in Github: `git pull`
-12. At local, delete the branch: `git branch -d iss56`
-13. At local, create new branch according to the name of issue: `git checkout -b iss58`
+7. Delete branch in Github
+8. Close issue in Github
+9. At local, switch to `dev` branch: `git checkout dev`
+10. At local, pull from dev in Github: `git pull`
+11. At local, delete the branch: `git branch -d iss56`
+12. At local, create new branch according to the name of issue: `git checkout -b iss58`
+
+# Git (release / tag)
+Step 1: check out the branch where you want to create tag
+Git checkout <branch>
+
+Step 2: create tag with some name
+Git tag <tag name> 
+Example: git tag v1.0
+Tag with annotate
+Example: git tag -a v1.1 -m “tag for release ver 1.1”
+
+Step 3: display tags
+Git tag
+Git show v1.0
+Git tag -l “v1.*”
+
+Step 4: push tag to remote
+Git push origin v1.0
+Git push origin --tags
+Git push --tags
+(to push all tags at once)
+
+Step 5: delete tags (if required)
+To delete tags from local:
+Git tag -d v1.0
+Git tag --delete v1.0
+
+To delete tags from remote:
+Git push origin -d v1.0
+Git push origin --delete v1.0
+Git push origin:v1.0
+
+To delete multiple tags at once
+Git tag -d v1.0 v1.1 (local)
+Git push origin -d v1.0 v1.1 (remote)
+
+How to checkout tags (when required)
+We cannot checkout tags in git
+We can create a branch from a tag and checkout the branch
+Git checkout -b <branch name> <tag name>
+Example: git checkout -b ReleaseVer1 v1.0
+
+Can I create a tag from some past commit?
+Yes
+Git tag <tag name> <reference of commit>
+Example: git tag v1.2 5fcdb03
+
