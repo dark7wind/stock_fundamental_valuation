@@ -61,7 +61,6 @@ financial data.
 11. At local, delete the branch: `git branch -d iss56`
 12. At local, create new branch according to the name of issue: `git checkout -b iss58`
 
-<<<<<<< HEAD
 # Git (release / tag)
 Step 1: check out the branch where you want to create tag
 Git checkout <branch>
@@ -108,38 +107,6 @@ Yes
 Git tag <tag name> <reference of commit>
 Example: git tag v1.2 5fcdb03
 
-=======
-# Git release new version
-Git create tag
-Step 1: check out the branch where you want to create tag
-Git checkout <branch>
-
-Step 2: create tag with some name
-Git tag <tag name> 
-Example: git tag v1.0
-Tag with annotate
-Example: git tag -a v1.1 -m “tag for release ver 1.1”
-
-Step 3: display tags
-Git tag
-Git show v1.0
-Git tag -l “v1.*”
-
-Step 4: push tag to remote
-Git push origin v1.0
-Git push origin --tags
-Git push --tags
-(to push all tags at once)
-
-Step 5: delete tags (if required)
-To delete tags from local:
-Git tag -d v1.0
-Git tag --delete v1.0
-
-To delete tags from remote:
-Git push origin -d v1.0
-Git push origin --delete v1.0
-Git push origin:v1.0
 
 To delete multiple tags at once
 Git tag -d v1.0 v1.1 (local)
