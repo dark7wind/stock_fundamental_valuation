@@ -133,4 +133,3 @@ def get_analysis_info_revenue_single_stock(stock_id, ticker):
 
 if __name__ == '__main__':
     df_income_statement = get_income_statement_single_stock_yearly(1, 'AAPL')
-    1

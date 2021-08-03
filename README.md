@@ -61,6 +61,7 @@ financial data.
 11. At local, delete the branch: `git branch -d iss56`
 12. At local, create new branch according to the name of issue: `git checkout -b iss58`
 
+<<<<<<< HEAD
 # Git (release / tag)
 Step 1: check out the branch where you want to create tag
 Git checkout <branch>
@@ -107,3 +108,6 @@ Yes
 Git tag <tag name> <reference of commit>
 Example: git tag v1.2 5fcdb03
 
+=======
+# Git release new version
+>>>>>>> dev
