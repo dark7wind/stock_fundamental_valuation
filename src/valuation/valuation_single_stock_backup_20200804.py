@@ -40,48 +40,11 @@ def valuation_single_stock(ticker, input_config_dir, input_config_file):
             df_income_statement_yearly = df_income_statement.loc[(df_income_statement['type'] == 'yearly')]
             df_balance_sheet_yearly = df_balance_sheet.loc[(df_balance_sheet['type'] == 'yearly')]
 
-            ## calculate income statement trailing 12 month
-            ### check the latest report is yearly or quarterly
-            df_income_statement_latest = df_income_statement.loc[df_income_statement['endDate'] == \
-                                                                 df_income_statement['endDate'].max()]
-            income_statement_latest_type = df_income_statement_latest.iloc[0]['type']
-            if income_statement_latest_type == 'yearly':
-                df_income_statement_current = df_income_statement.loc[df_income_statement['endDate'] == \
-                                                                      df_income_statement['endDate'].max()]
-            elif income_statement_latest_type == 'quarterly':
-                # judge if the number of quarterly reports are larger than five
-                # need at least five quarterly and one yearly report to calculate trailing 12 month value
-                df_income_statement_quarterly = df_income_statement.loc[df_income_statement['type'] == 'quarterly']
-                quarterly_report_number = len(df_income_statement_quarterly)
-                if quarterly_report_number < 5:
-                    # need to improve, now just multiple the scaling number
-                    scaling_factor = 4/quarterly_report_number
-                    # the numerica columns multiple the scaling factors
-                    ## select the numerica columns
-                    numerica_columns = df_income_statement_quarterly.select_dtypes(include=np.number).columns.to_list()
-                    ## sum of each quaterly results and multiple the scaling factors
-                    quarterly_sum = df_income_statement_quarterly[numerica_columns].sum(axis=0)
-                    quarterly_sum_scaling = quarterly_sum*scaling_factor
-                    ### create the new dataframe df_income_statement_current and update the value by quarterly_sum_scaling
-                    df_income_statement_current = df_income_statement_quarterly.loc[\
-                        df_income_statement_quarterly['endDate'] == df_income_statement_quarterly['endDate'].max()]
-                    df_income_statement_current[numerica_columns] = quarterly_sum_scaling
-
-                else:
-                    # to do --> calculate the trailing 12 month
-                    pass
-
-            else:
-                print('error')
-
-
-            # need to delete 20210804
+            ## to do -> use yearly or quarterly -> now use yearly
             df_income_statement_current = df_income_statement_yearly.loc[df_income_statement_yearly['endDate'] == \
                                                                          df_income_statement_yearly['endDate'].max()]
-
-            ## load the latest balance sheet
-            df_balance_sheet_current = df_balance_sheet.loc[df_balance_sheet['endDate'] == \
-                                                            df_balance_sheet['endDate'].max()]
+            df_balance_sheet_current = df_balance_sheet_yearly.loc[df_balance_sheet_yearly['endDate'] == \
+                                                                   df_balance_sheet_yearly['endDate'].max()]
             # total revenue, income before tax, income tax expense
             total_revenue = df_income_statement_current['totalRevenue'].iloc[0]
             income_before_tax = df_income_statement_current['incomeBeforeTax'].iloc[0]
