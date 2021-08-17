@@ -1,6 +1,6 @@
 # general input
 ## finance data input
-finance_input: 'Yahoo' # 'Yahoo_TTM', 'Yahoo', 'manual'
+finance_input: 'Yahoo_trailing_12_month' # 'Yahoo_TTM', 'Yahoo_trailing_12_month', 'manual'
 ### operating income
 total_revenue: 0
 income_before_tax: 0

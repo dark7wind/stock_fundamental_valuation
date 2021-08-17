@@ -3,7 +3,8 @@ from definitions import INPUT_DIR
 from src.valuation.valuation_input_finance import *
 from src.valuation.valuation_fcff import *
 #from src.valuation.valuation_input_list import *
-
+import warnings
+warnings.filterwarnings("ignore")
 
 LOAD_TTM = True
 
@@ -34,7 +35,8 @@ def valuation_single_stock(ticker, input_config_dir, input_config_file):
 
     try:
         ## load income statement and balance sheet
-        if finance_input == 'Yahoo':
+        print('finance_input:{}'.format(finance_input))
+        if finance_input == 'Yahoo_trailing_12_month':
             df_income_statement, df_balance_sheet, df_stock_statics = get_input_finance_func(ticker, read_from_sql=True,
                                                                                              read_TTM=False)
             df_income_statement_yearly = df_income_statement.loc[(df_income_statement['type'] == 'yearly')]
@@ -125,7 +127,7 @@ def valuation_single_stock(ticker, input_config_dir, input_config_file):
             income_tax_expense = df_income_statement_current['incomeTaxExpense'].iloc[0]
             interest_expense = df_income_statement_current['interestExpense'].iloc[0]
 
-            1
+
 
         elif finance_input == 'Yahoo_TTM':
             df_income_statement, df_balance_sheet, df_stock_statics = get_input_finance_func(ticker, read_from_sql=True,
@@ -327,6 +329,7 @@ def valuation_single_stock(ticker, input_config_dir, input_config_file):
 
         ## estimated value
         estimated_value, price_to_value = estimated_value_share_func(equity_value, num_share, price_current)
+        print(f'estimate value: {price_current}')
         print(f'estimate value: {estimated_value}')
         print(f'price / estimated value: {price_to_value}')
 
@@ -341,7 +344,7 @@ def valuation_single_stock(ticker, input_config_dir, input_config_file):
 
 
 if __name__ == '__main__':
-    ticker = 'FRAF' #'TSN', 'KR' 'ODFL' 'RL', 'MAR'
+    ticker = 'TSN' #'TSN', 'KR' 'ODFL' 'RL', 'MAR'
     input_config_dir = INPUT_DIR
     input_config_file = 'input.ymal'
     valuation_single_stock(ticker, input_config_dir, input_config_file)
