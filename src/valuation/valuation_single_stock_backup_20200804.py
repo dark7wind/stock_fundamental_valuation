@@ -3,8 +3,7 @@ from definitions import INPUT_DIR
 from src.valuation.valuation_input_finance import *
 from src.valuation.valuation_fcff import *
 #from src.valuation.valuation_input_list import *
-import warnings
-warnings.filterwarnings("ignore")
+
 
 LOAD_TTM = True
 
@@ -35,99 +34,22 @@ def valuation_single_stock(ticker, input_config_dir, input_config_file):
 
     try:
         ## load income statement and balance sheet
-        print('finance_input:{}'.format(finance_input))
-        if finance_input == 'Yahoo_trailing_12_month':
+        if finance_input == 'Yahoo':
             df_income_statement, df_balance_sheet, df_stock_statics = get_input_finance_func(ticker, read_from_sql=True,
                                                                                              read_TTM=False)
             df_income_statement_yearly = df_income_statement.loc[(df_income_statement['type'] == 'yearly')]
+            df_balance_sheet_yearly = df_balance_sheet.loc[(df_balance_sheet['type'] == 'yearly')]
 
-            ## calculate income statement trailing 12 month
-            ### check the latest report is yearly or quarterly
-            df_income_statement_latest = df_income_statement.loc[df_income_statement['endDate'] == \
-                                                                 df_income_statement['endDate'].max()]
-            income_statement_latest_type = df_income_statement_latest.iloc[0]['type']
-            if income_statement_latest_type == 'yearly':
-                df_income_statement_current = df_income_statement.loc[df_income_statement['endDate'] == \
-                                                                      df_income_statement['endDate'].max()]
-            elif income_statement_latest_type == 'quarterly':
-                # judge if the number of quarterly reports are larger than five
-                # need at least five quarterly and one yearly report to calculate trailing 12 month value
-                df_income_statement_quarterly = df_income_statement.loc[df_income_statement['type'] == 'quarterly']
-                quarterly_report_number = len(df_income_statement_quarterly)
-                if quarterly_report_number < 5:
-                    # need to improve, now just multiple the scaling number
-                    scaling_factor = 4/quarterly_report_number
-                    # the numerica columns multiple the scaling factors
-                    ## select the numerica columns
-                    numerica_columns = df_income_statement_quarterly.select_dtypes(include=np.number).columns.to_list()
-                    ## sum of each quaterly results and multiple the scaling factors
-                    quarterly_sum = df_income_statement_quarterly[numerica_columns].sum(axis=0)
-                    quarterly_sum_scaling = quarterly_sum*scaling_factor
-                    ### create the new dataframe df_income_statement_current and update the value by quarterly_sum_scaling
-                    df_income_statement_current = df_income_statement_quarterly.loc[\
-                        df_income_statement_quarterly['endDate'] == df_income_statement_quarterly['endDate'].max()]
-                    df_income_statement_current[numerica_columns] = quarterly_sum_scaling
-                    df_income_statement_current['type'] = 'quarterly_sum_scaling'
-
-                else:
-                    # to do --> calculate the trailing 12 month
-                    ## get the latest yearly income statement
-                    df_income_statement_yearly_latest = df_income_statement_yearly.loc[\
-                        df_income_statement_yearly['endDate'] == df_income_statement_yearly['endDate'].max()]
-                    income_statement_yearly_latest_date = df_income_statement_yearly_latest.iloc[0]['endDate']
-
-                    ## calculate the first x month this year
-                    ### numerical columns
-                    numerica_columns = df_income_statement_quarterly.select_dtypes(include=np.number).columns.to_list()
-                    ### endDate larger than income_statement_yearly_latest_date
-                    df_income_statement_quarterly_this_year = df_income_statement_quarterly.loc[\
-                        df_income_statement_quarterly['endDate'] > income_statement_yearly_latest_date]
-                    number_quarters = len(df_income_statement_quarterly_this_year)
-                    ## sum of each quaterly results
-                    this_year_sum = df_income_statement_quarterly_this_year[numerica_columns].sum(axis=0)
-                    df_income_statement_this_year_sum = df_income_statement_quarterly_this_year.loc[\
-                        df_income_statement_quarterly_this_year['endDate'] == \
-                        df_income_statement_quarterly_this_year['endDate'].max()]
-                    df_income_statement_this_year_sum[numerica_columns] = this_year_sum
-
-                    ## calculate the first x month last year
-                    df_income_statement_quarterly_last_year_full = df_income_statement_quarterly.loc[ \
-                        df_income_statement_quarterly['endDate'] <= income_statement_yearly_latest_date]
-                    ### sort by endDate
-                    df_income_statement_quarterly_last_year_full = \
-                        df_income_statement_quarterly_last_year_full.sort_values(by=['endDate'], ascending=False)
-                    df_income_statement_quarterly_last_year = \
-                        df_income_statement_quarterly_last_year_full.iloc[number_quarters:4]
-                    last_year_sum = df_income_statement_quarterly_last_year[numerica_columns].sum(axis=0)
-                    df_income_statement_last_year_sum = df_income_statement_quarterly_last_year.loc[ \
-                        df_income_statement_quarterly_last_year['endDate'] == \
-                        df_income_statement_quarterly_last_year['endDate'].max()]
-                    df_income_statement_last_year_sum[numerica_columns] = last_year_sum
-
-                    ## 12 trailing month --> last 10 k - last year first x month + this year first x month
-                    trailing_12_month = df_income_statement_yearly_latest[numerica_columns].iloc[0] \
-                                        - df_income_statement_last_year_sum[numerica_columns].iloc[0] \
-                                        + df_income_statement_this_year_sum[numerica_columns].iloc[0]
-                    ### create the new dataframe df_income_statement_current and update the value by trailing 12 month
-                    df_income_statement_current = df_income_statement_quarterly.loc[\
-                        df_income_statement_quarterly['endDate'] == df_income_statement_quarterly['endDate'].max()]
-                    df_income_statement_current[numerica_columns] = trailing_12_month
-                    df_income_statement_current['type'] = 'trailing_12_month'
-
-            else:
-                print('error')
-
-
-            ## load the latest balance sheet
-            df_balance_sheet_current = df_balance_sheet.loc[df_balance_sheet['endDate'] == \
-                                                            df_balance_sheet['endDate'].max()]
+            ## to do -> use yearly or quarterly -> now use yearly
+            df_income_statement_current = df_income_statement_yearly.loc[df_income_statement_yearly['endDate'] == \
+                                                                         df_income_statement_yearly['endDate'].max()]
+            df_balance_sheet_current = df_balance_sheet_yearly.loc[df_balance_sheet_yearly['endDate'] == \
+                                                                   df_balance_sheet_yearly['endDate'].max()]
             # total revenue, income before tax, income tax expense
             total_revenue = df_income_statement_current['totalRevenue'].iloc[0]
             income_before_tax = df_income_statement_current['incomeBeforeTax'].iloc[0]
             income_tax_expense = df_income_statement_current['incomeTaxExpense'].iloc[0]
             interest_expense = df_income_statement_current['interestExpense'].iloc[0]
-
-
 
         elif finance_input == 'Yahoo_TTM':
             df_income_statement, df_balance_sheet, df_stock_statics = get_input_finance_func(ticker, read_from_sql=True,
@@ -329,7 +251,6 @@ def valuation_single_stock(ticker, input_config_dir, input_config_file):
 
         ## estimated value
         estimated_value, price_to_value = estimated_value_share_func(equity_value, num_share, price_current)
-        print(f'estimate value: {price_current}')
         print(f'estimate value: {estimated_value}')
         print(f'price / estimated value: {price_to_value}')
 
@@ -344,7 +265,7 @@ def valuation_single_stock(ticker, input_config_dir, input_config_file):
 
 
 if __name__ == '__main__':
-    ticker = 'TSN' #'TSN', 'KR' 'ODFL' 'RL', 'MAR'
+    ticker = 'HBI' #'TSN', 'KR' 'ODFL' 'RL', 'MAR'
     input_config_dir = INPUT_DIR
     input_config_file = 'input.ymal'
     valuation_single_stock(ticker, input_config_dir, input_config_file)
