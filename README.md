@@ -123,3 +123,10 @@ Yes
 Git tag <tag name> <reference of commit>
 Example: git tag v1.2 5fcdb03
 
+# Backup MySQL
+### backup the database
+In command terminal, run 
+`sudo mysqldump [database name] > dumpfilename.sql`
+### restore the database
+* Step 1: In mysql console, create a database `CREATE DATABASE [database name]`
+* Step 2: In terminal, restore the database `sudo mysql -uroot -p [database name] < dumpfilename.sql`
