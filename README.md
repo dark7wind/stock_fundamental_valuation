@@ -130,4 +130,6 @@ In command terminal, run
 
 ### restore the database
 * Step 1: In mysql console, create a database `CREATE DATABASE [database name]`
-* Step 2: In terminal, restore the database `sudo mysql -uroot -p [database name] < dumpfilename.sql`
+* Step 2: In terminal, restore the database `sudo mysql -u root -p [database name] < dumpfilename.sql`
+note: in windows (if cannot add the MySQL bin path to the windows system path environment) `cd "c:\Program Files\MySQL\
+MySQL Server 8.0\bin` and `mysql -u -root -p [database name] < "c:\[dumpfile path]\dumpfilename.sql"`
