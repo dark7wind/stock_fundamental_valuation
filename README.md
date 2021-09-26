@@ -126,10 +126,10 @@ Example: git tag v1.2 5fcdb03
 # Backup MySQL
 ### backup the database
 In command terminal, run 
-`sudo mysqldump [database name] > dumpfilename.sql` (dumpfilename --> 20210927_backup)
+`sudo mysqldump [database name] > dumpfilename.sql` (dumpfilename --> backup_securities_database_20210927
+)
 
 ### restore the database
 * Step 1: In mysql console, create a database `CREATE DATABASE [database name]`
 * Step 2: In terminal, restore the database `sudo mysql -u root -p [database name] < dumpfilename.sql`
-note: in windows (if cannot add the MySQL bin path to the windows system path environment) `cd "c:\Program Files\MySQL\
-MySQL Server 8.0\bin` and `mysql -u -root -p [database name] < "c:\[dumpfile path]\dumpfilename.sql"`
+note: in windows (if cannot add the MySQL bin path to the windows system path environment), in Command Prompt `cd "c:\Program Files\MySQL\MySQL Server 8.0\bin"` and `mysql -u -root -p [database name] < "c:\[dumpfile path]\dumpfilename.sql"`
