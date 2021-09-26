@@ -126,7 +126,7 @@ Example: git tag v1.2 5fcdb03
 # Backup MySQL
 ### backup the database
 In command terminal, run 
-`sudo mysqldump [database name] > dumpfilename.sql`
+`sudo mysqldump [database name] > dumpfilename.sql` (dumpfilename --> 20210927_backup)
 
 ### restore the database
 * Step 1: In mysql console, create a database `CREATE DATABASE [database name]`
