@@ -35,3 +35,10 @@ SHOW CREATE TABLE stock_statistics;
 ```sql
 ALTER TABLE `stock_statistics` ADD UNIQUE `unique_index_2`(`ticker`, `sharesOutstanding`);
 ```
+
+## Database Table Management
+### Table: stock_info
+This database is built based on the file `indname.xls` from Prof. Damodaran's webiste [Prof. Damodaran's webiste ](https://pages.stern.nyu.edu/~adamodar/) 'data breakdown' --> company lookup --> spreadsheet that includes the listing of industries and the companies in each one
+
+**Action:** Check if the data is updated every six months
+**Frequency:** 6 months
