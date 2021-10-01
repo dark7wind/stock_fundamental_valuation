@@ -41,6 +41,7 @@ def download_stock_statistics():
 
         # write to csv
         df_statistics_total.to_csv(STATISTICS_DIR+file_date+'_'+file_statistics, index=False)
+        return df_statistics_total
 
 
 if __name__ == '__main__':
