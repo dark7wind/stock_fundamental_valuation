@@ -63,27 +63,6 @@ The data souce is Damodaran's every year valution excel sheet
 **Frequency:** yearly
 
 
-###### to do 
-######## Process to do
-1. Weekly update
-* Wednesday update analysis info revenue 
-* Wednesday update stock statistics
-* Thursday update income_statement_TTM
-    * run process/weekly/weekly_update_income_statement_TTM.py
-* Friday update balance sheet
-    * run process/weekly/weekly_update_balance_sheet.py
-* Friday update cash flow
-    * run process/weekly/weekly_update_cash_flow.py
-* Friday update income_statement.py
-    * run process/weekly/weekly_update_income_statement.py
-* Friday update historical_price
-
-2. Monthly update
-* update stock info
-3. Yearly update
-* update industry 
-
-
 ## MySQL
 ### Backup the database
 In command terminal, run 
