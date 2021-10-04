@@ -1,7 +1,7 @@
 # Database Management
 
 ## Database
-Database name: securities_database
+Database name: `securities_database`
 
 ### Tables overview
 1. **balance_sheet**
